@@ -2,10 +2,17 @@
 import { motion } from "framer-motion";
 import { LevelCard } from "@/components/LevelCard";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
+  
   const handleStartLevel = (level: number) => {
-    toast.info(`Em breve: Nível ${level}!`);
+    if (level === 1) {
+      navigate('/game');
+    } else {
+      toast.info(`Em breve: Nível ${level}!`);
+    }
   };
 
   return (
