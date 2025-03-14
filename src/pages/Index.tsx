@@ -10,6 +10,8 @@ const Index = () => {
   const handleStartLevel = (level: number) => {
     if (level === 1) {
       navigate('/game');
+    } else if (level === 2) {
+      navigate('/codepets');
     } else {
       toast.info(`Em breve: Nível ${level}!`);
     }
@@ -51,11 +53,10 @@ const Index = () => {
             transition={{ delay: 0.2 }}
           >
             <LevelCard
-              title="Variáveis"
-              description="Descubra como guardar informações no seu programa."
+              title="CodePets"
+              description="Aprenda Python cuidando do seu próprio pet virtual!"
               level={2}
               onStart={() => handleStartLevel(2)}
-              isLocked
             />
           </motion.div>
 
