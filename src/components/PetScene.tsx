@@ -1,7 +1,8 @@
 
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+// Remove the problematic import since we're not using it yet
+// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 interface PetSceneProps {
   petType: 'cat' | 'dog' | 'dragon';
