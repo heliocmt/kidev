@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +22,7 @@ export const MascotHero = () => {
             Aprender a programar nunca foi tão divertido! Junte-se a milhares de crianças descobrindo o mundo da programação.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-100 hover:text-purple-700 text-lg px-8 py-6" onClick={() => navigate('/game')}>
+            <Button size="lg" variant="outline" onClick={() => navigate('/game')} className="border-white hover:bg-white/20 text-lg px-8 py-6 text-purple-600">
               Começar Agora
             </Button>
             <Button size="lg" variant="outline" onClick={() => navigate('/blockcoding')} className="border-white hover:bg-white/20 text-lg px-8 py-6 text-purple-600">
