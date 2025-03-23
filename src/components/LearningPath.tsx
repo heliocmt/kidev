@@ -28,7 +28,8 @@ interface PathStepProps {
   description: string;
   icon: React.ReactNode;
   color: string;
-  position: 'left' | 'right';
+  position: 'top' | 'bottom';
+  xPosition: number;
   onClick: () => void;
   delay: number;
 }
@@ -40,31 +41,32 @@ const PathStep: React.FC<PathStepProps> = ({
   icon, 
   color, 
   position, 
+  xPosition,
   onClick,
   delay
 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, x: position === 'left' ? -20 : 20 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: position === 'top' ? -20 : 20 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ delay: delay * 0.1, duration: 0.5 }}
       className={cn(
-        "absolute transform",
-        position === 'left' ? '-translate-x-full -left-4' : 'translate-x-0 right-4',
+        "absolute",
+        position === 'top' ? '-translate-y-full -top-4' : 'translate-y-0 bottom-4',
       )}
-      style={{ top: `${(step - 1) * (100 / 14)}%` }}
+      style={{ left: `${xPosition}%` }}
     >
       <div className={cn(
-        "flex items-center max-w-52",
-        position === 'left' ? 'mr-2 flex-row-reverse text-right' : 'ml-2 flex-row text-left'
+        "flex max-w-52",
+        position === 'top' ? 'mb-2 flex-col items-center text-center' : 'mt-2 flex-col-reverse items-center text-center'
       )}>
         <motion.button
           whileHover={{ scale: 1.1, rotate: [0, -5, 5, -5, 0] }}
           whileTap={{ scale: 0.95 }}
           onClick={onClick}
           className={cn(
-            "w-10 h-10 rounded-full flex items-center justify-center text-white shadow-md shadow-purple-200",
-            position === 'left' ? 'ml-2' : 'mr-2',
+            "w-12 h-12 rounded-full flex items-center justify-center text-white shadow-md shadow-purple-200",
+            position === 'top' ? 'mb-2' : 'mt-2',
             color
           )}
         >
@@ -101,145 +103,224 @@ export const LearningPath: React.FC = () => {
     }
   };
 
+  const generateWavePoints = (steps: number) => {
+    const points = [];
+    const amplitude = 40; // How high/low the wave goes
+    
+    for (let i = 0; i < steps; i++) {
+      // Calculate x position as percentage (evenly spaced)
+      const x = (i / (steps - 1)) * 100;
+      
+      // Calculate y position with sine wave (50 is the center, amplitude is the height)
+      // We add i to make each wave peak gradually higher
+      const y = 50 + amplitude * Math.sin((i / (steps - 1)) * Math.PI * 2);
+      
+      points.push({ x, y });
+    }
+    
+    return points;
+  };
+  
+  const wavePoints = generateWavePoints(15);
+
   const pathSteps = [
     {
       step: 1,
       title: "Primeiros Passos",
       description: "Comece sua jornada na programação",
-      icon: <LightbulbIcon className="h-5 w-5" />,
+      icon: <LightbulbIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "left" as const
+      position: wavePoints[0].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[0].x
     },
     {
       step: 2,
       title: "Algoritmos Básicos",
       description: "Aprenda a pensar como um programador",
-      icon: <PuzzleIcon className="h-5 w-5" />,
+      icon: <PuzzleIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "right" as const
+      position: wavePoints[1].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[1].x
     },
     {
       step: 3,
       title: "Lógica Divertida",
       description: "Resolva desafios de lógica",
-      icon: <BrainIcon className="h-5 w-5" />,
+      icon: <BrainIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "left" as const
+      position: wavePoints[2].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[2].x
     },
     {
       step: 4,
       title: "CodePets",
       description: "Crie e cuide de pets virtuais",
-      icon: <GamepadIcon className="h-5 w-5" />,
+      icon: <GamepadIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "right" as const
+      position: wavePoints[3].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[3].x
     },
     {
       step: 5,
       title: "Variáveis & Dados",
       description: "Aprenda a armazenar informações",
-      icon: <BookOpenIcon className="h-5 w-5" />,
+      icon: <BookOpenIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "left" as const
+      position: wavePoints[4].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[4].x
     },
     {
       step: 6,
       title: "Missão Loops",
       description: "Domine a arte da repetição",
-      icon: <RocketIcon className="h-5 w-5" />,
+      icon: <RocketIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "right" as const
+      position: wavePoints[5].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[5].x
     },
     {
       step: 7,
       title: "Condicionais",
       description: "Tome decisões no seu código",
-      icon: <MapPinIcon className="h-5 w-5" />,
+      icon: <MapPinIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "left" as const
+      position: wavePoints[6].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[6].x
     },
     {
       step: 8,
       title: "Blocos de Código",
       description: "Programe usando blocos visuais",
-      icon: <CodeIcon className="h-5 w-5" />,
+      icon: <CodeIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "right" as const
+      position: wavePoints[7].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[7].x
     },
     {
       step: 9,
       title: "Funções Mágicas",
       description: "Crie suas próprias funções",
-      icon: <SparklesIcon className="h-5 w-5" />,
+      icon: <SparklesIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "left" as const
+      position: wavePoints[8].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[8].x
     },
     {
       step: 10,
       title: "Desafio do Labirinto",
       description: "Use código para escapar do labirinto",
-      icon: <CompassIcon className="h-5 w-5" />,
+      icon: <CompassIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "right" as const
+      position: wavePoints[9].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[9].x
     },
     {
       step: 11,
       title: "Estruturas de Dados",
       description: "Organize seus dados de forma eficiente",
-      icon: <TargetIcon className="h-5 w-5" />,
+      icon: <TargetIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "left" as const
+      position: wavePoints[10].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[10].x
     },
     {
       step: 12,
       title: "Python Quest",
       description: "Comece sua jornada em Python",
-      icon: <StarIcon className="h-5 w-5" />,
+      icon: <StarIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "right" as const
+      position: wavePoints[11].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[11].x
     },
     {
       step: 13,
       title: "Criação de Jogos",
       description: "Desenvolva seu primeiro jogo",
-      icon: <GamepadIcon className="h-5 w-5" />,
+      icon: <GamepadIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "left" as const
+      position: wavePoints[12].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[12].x
     },
     {
       step: 14,
       title: "Projeto Final",
       description: "Aplique tudo que aprendeu",
-      icon: <FlagIcon className="h-5 w-5" />,
+      icon: <FlagIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "right" as const
+      position: wavePoints[13].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[13].x
     },
     {
       step: 15,
       title: "Graduação",
       description: "Parabéns, você completou a trilha!",
-      icon: <GraduationCapIcon className="h-5 w-5" />,
+      icon: <GraduationCapIcon className="h-6 w-6" />,
       color: "bg-gradient-to-tr from-purple-600 to-pink-500",
-      position: "left" as const
+      position: wavePoints[14].y < 50 ? "top" as const : "bottom" as const,
+      xPosition: wavePoints[14].x
     },
   ];
 
   return (
     <div className="py-6 px-4">
       <div className="relative">
-        {/* Path Line */}
-        <div className="relative h-[600px] md:h-[700px]">
-          <div className="absolute top-0 bottom-0 left-1/2 w-2 bg-gradient-to-b from-purple-500 via-pink-500 to-purple-500 rounded-full glow transform -translate-x-1/2 shadow-[0_0_15px_rgba(155,100,255,0.5)]"></div>
+        {/* Path Line Container */}
+        <div className="relative h-[500px] md:h-[600px] w-full overflow-hidden">
+          <svg 
+            width="100%" 
+            height="100%" 
+            viewBox="0 0 100 100" 
+            preserveAspectRatio="none"
+            className="absolute inset-0"
+          >
+            {/* Glow filter */}
+            <defs>
+              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="2" result="blur" />
+                <feComposite operator="over" in="SourceGraphic" />
+              </filter>
+              
+              {/* Gradient for path */}
+              <linearGradient id="pathGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#9b6eff" />
+                <stop offset="50%" stopColor="#ff66d9" />
+                <stop offset="100%" stopColor="#9b6eff" />
+              </linearGradient>
+            </defs>
+            
+            {/* Path Background Glow Effect */}
+            <path
+              d={`M ${wavePoints.map(point => `${point.x} ${point.y}`).join(' L ')}`}
+              fill="none"
+              stroke="url(#pathGradient)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              filter="url(#glow)"
+              opacity="0.7"
+            />
+            
+            {/* Main Path */}
+            <path
+              d={`M ${wavePoints.map(point => `${point.x} ${point.y}`).join(' L ')}`}
+              fill="none"
+              stroke="url(#pathGradient)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
           
           {/* Points on the Path */}
-          {Array.from({ length: 15 }).map((_, i) => (
+          {wavePoints.map((point, i) => (
             <motion.div
               key={i}
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.1 + i * 0.1, duration: 0.3 }}
-              className="absolute w-3 h-3 rounded-full bg-white border-2 border-pink-500 transform -translate-x-1/2 left-1/2 z-10"
-              style={{ top: `${i * (100 / 14)}%` }}
+              className="absolute w-4 h-4 rounded-full bg-white border-2 border-pink-500 transform -translate-x-1/2 -translate-y-1/2 z-10"
+              style={{ 
+                left: `${point.x}%`, 
+                top: `${point.y}%` 
+              }}
             />
           ))}
           
@@ -248,7 +329,8 @@ export const LearningPath: React.FC = () => {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring" }}
-            className="absolute top-0 left-1/2 w-5 h-5 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 transform -translate-x-1/2 -translate-y-1/2 shadow-md z-20"
+            className="absolute w-6 h-6 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 transform -translate-x-1/2 -translate-y-1/2 shadow-md z-20"
+            style={{ left: `${wavePoints[0].x}%`, top: `${wavePoints[0].y}%` }}
           />
           
           {/* End Point */}
@@ -256,7 +338,8 @@ export const LearningPath: React.FC = () => {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 1.7, type: "spring" }}
-            className="absolute bottom-0 left-1/2 w-5 h-5 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 transform -translate-x-1/2 translate-y-1/2 shadow-md z-20"
+            className="absolute w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 transform -translate-x-1/2 -translate-y-1/2 shadow-md z-20"
+            style={{ left: `${wavePoints[14].x}%`, top: `${wavePoints[14].y}%` }}
           />
 
           {/* Steps */}
