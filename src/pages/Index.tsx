@@ -1,6 +1,5 @@
 
 import { motion } from "framer-motion";
-import { LevelCard } from "@/components/LevelCard";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { CategoryBadge } from "@/components/CategoryBadge";
@@ -8,27 +7,13 @@ import { MascotHero } from "@/components/MascotHero";
 import { Testimonial } from "@/components/Testimonial";
 import { FeaturedGames } from "@/components/FeaturedGames";
 import { HowItWorks } from "@/components/HowItWorks";
-import { CodeIcon, BrainIcon, TrophyIcon, GamepadIcon } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { LearningPath } from "@/components/LearningPath";
 
 const Index = () => {
   const navigate = useNavigate();
   
-  const handleStartLevel = (level: number) => {
-    if (level === 1) {
-      navigate('/game');
-    } else if (level === 2) {
-      navigate('/codepets');
-    } else if (level === 3) {
-      navigate('/blockcoding');
-    } else if (level === 4) {
-      navigate('/pythonquest');
-    } else {
-      toast.info(`Em breve: Nível ${level}!`);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 flex flex-col">
       <Header />
@@ -59,63 +44,8 @@ const Index = () => {
                 Aventuras de Aprendizado
               </h2>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <LevelCard
-                    title="Primeiros Passos"
-                    description="Aprenda conceitos básicos de programação de forma interativa."
-                    level={1}
-                    icon={<CodeIcon className="h-6 w-6 text-blue-500" />}
-                    onStart={() => handleStartLevel(1)}
-                  />
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <LevelCard
-                    title="CodePets"
-                    description="Crie e cuide de pets virtuais enquanto aprende a programar."
-                    level={2}
-                    icon={<GamepadIcon className="h-6 w-6 text-green-500" />}
-                    onStart={() => handleStartLevel(2)}
-                  />
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <LevelCard
-                    title="Programação em Blocos"
-                    description="Monte sua própria aventura com blocos de código coloridos."
-                    level={3}
-                    icon={<BrainIcon className="h-6 w-6 text-yellow-500" />}
-                    onStart={() => handleStartLevel(3)}
-                  />
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <LevelCard
-                    title="Python Quest"
-                    description="Aventure-se no mundo do Python com desafios incríveis."
-                    level={4}
-                    icon={<TrophyIcon className="h-6 w-6 text-purple-500" />}
-                    onStart={() => handleStartLevel(4)}
-                  />
-                </motion.div>
-              </div>
+              {/* Replaced card grid with Learning Path */}
+              <LearningPath />
             </div>
             
             <FeaturedGames />
