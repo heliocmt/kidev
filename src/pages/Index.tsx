@@ -39,13 +39,17 @@ const Index = () => {
 
             <HowItWorks />
             
-            <div className="mb-20">
-              <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 text-purple-800">
+            <div className="mb-16">
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-purple-800">
                 Trilha de Aprendizado
               </h2>
               
-              {/* Learning Path */}
-              <LearningPath />
+              <div className="relative overflow-hidden rounded-xl bg-white/50 backdrop-blur-sm shadow-xl p-4 border border-purple-100">
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-50/80 to-pink-50/80 opacity-70"></div>
+                <div className="relative z-10">
+                  <LearningPath />
+                </div>
+              </div>
             </div>
             
             <FeaturedGames />

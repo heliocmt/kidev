@@ -50,20 +50,20 @@ const PathStep: React.FC<PathStepProps> = ({
       transition={{ delay: delay * 0.1, duration: 0.5 }}
       className={cn(
         "absolute transform",
-        position === 'left' ? '-translate-x-full -left-5' : 'translate-x-0 right-5',
+        position === 'left' ? '-translate-x-full -left-4' : 'translate-x-0 right-4',
       )}
       style={{ top: `${(step - 1) * (100 / 14)}%` }}
     >
       <div className={cn(
-        "flex items-center max-w-60",
-        position === 'left' ? 'mr-3 flex-row-reverse text-right' : 'ml-3 flex-row text-left'
+        "flex items-center max-w-52",
+        position === 'left' ? 'mr-2 flex-row-reverse text-right' : 'ml-2 flex-row text-left'
       )}>
         <motion.button
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.1, rotate: [0, -5, 5, -5, 0] }}
           whileTap={{ scale: 0.95 }}
           onClick={onClick}
           className={cn(
-            "w-12 h-12 rounded-full flex items-center justify-center text-white",
+            "w-10 h-10 rounded-full flex items-center justify-center text-white shadow-md shadow-purple-200",
             position === 'left' ? 'ml-2' : 'mr-2',
             color
           )}
@@ -71,7 +71,7 @@ const PathStep: React.FC<PathStepProps> = ({
           {icon}
         </motion.button>
         <div>
-          <h3 className="font-bold text-sm">{title}</h3>
+          <h3 className="font-bold text-sm text-purple-900">{title}</h3>
           <p className="text-xs text-gray-600 mt-1">{description}</p>
         </div>
       </div>
@@ -106,137 +106,149 @@ export const LearningPath: React.FC = () => {
       step: 1,
       title: "Primeiros Passos",
       description: "Comece sua jornada na programação",
-      icon: <LightbulbIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <LightbulbIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "left" as const
     },
     {
       step: 2,
       title: "Algoritmos Básicos",
       description: "Aprenda a pensar como um programador",
-      icon: <PuzzleIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <PuzzleIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "right" as const
     },
     {
       step: 3,
       title: "Lógica Divertida",
       description: "Resolva desafios de lógica",
-      icon: <BrainIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <BrainIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "left" as const
     },
     {
       step: 4,
       title: "CodePets",
       description: "Crie e cuide de pets virtuais",
-      icon: <GamepadIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <GamepadIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "right" as const
     },
     {
       step: 5,
       title: "Variáveis & Dados",
       description: "Aprenda a armazenar informações",
-      icon: <BookOpenIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <BookOpenIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "left" as const
     },
     {
       step: 6,
       title: "Missão Loops",
       description: "Domine a arte da repetição",
-      icon: <RocketIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <RocketIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "right" as const
     },
     {
       step: 7,
       title: "Condicionais",
       description: "Tome decisões no seu código",
-      icon: <MapPinIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <MapPinIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "left" as const
     },
     {
       step: 8,
       title: "Blocos de Código",
       description: "Programe usando blocos visuais",
-      icon: <CodeIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <CodeIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "right" as const
     },
     {
       step: 9,
       title: "Funções Mágicas",
       description: "Crie suas próprias funções",
-      icon: <SparklesIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <SparklesIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "left" as const
     },
     {
       step: 10,
       title: "Desafio do Labirinto",
       description: "Use código para escapar do labirinto",
-      icon: <CompassIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <CompassIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "right" as const
     },
     {
       step: 11,
       title: "Estruturas de Dados",
       description: "Organize seus dados de forma eficiente",
-      icon: <TargetIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <TargetIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "left" as const
     },
     {
       step: 12,
       title: "Python Quest",
       description: "Comece sua jornada em Python",
-      icon: <StarIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <StarIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "right" as const
     },
     {
       step: 13,
       title: "Criação de Jogos",
       description: "Desenvolva seu primeiro jogo",
-      icon: <GamepadIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <GamepadIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "left" as const
     },
     {
       step: 14,
       title: "Projeto Final",
       description: "Aplique tudo que aprendeu",
-      icon: <FlagIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <FlagIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "right" as const
     },
     {
       step: 15,
       title: "Graduação",
       description: "Parabéns, você completou a trilha!",
-      icon: <GraduationCapIcon className="h-6 w-6" />,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      icon: <GraduationCapIcon className="h-5 w-5" />,
+      color: "bg-gradient-to-tr from-purple-600 to-pink-500",
       position: "left" as const
     },
   ];
 
   return (
-    <div className="py-10 px-4">
+    <div className="py-6 px-4">
       <div className="relative">
         {/* Path Line */}
-        <div className="relative h-[700px] md:h-[900px]">
-          <div className="absolute top-0 bottom-0 left-1/2 w-3 bg-gradient-to-b from-purple-500 via-pink-500 to-purple-500 rounded-full transform -translate-x-1/2"></div>
+        <div className="relative h-[600px] md:h-[700px]">
+          <div className="absolute top-0 bottom-0 left-1/2 w-2 bg-gradient-to-b from-purple-500 via-pink-500 to-purple-500 rounded-full glow transform -translate-x-1/2 shadow-[0_0_15px_rgba(155,100,255,0.5)]"></div>
+          
+          {/* Points on the Path */}
+          {Array.from({ length: 15 }).map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.1 + i * 0.1, duration: 0.3 }}
+              className="absolute w-3 h-3 rounded-full bg-white border-2 border-pink-500 transform -translate-x-1/2 left-1/2 z-10"
+              style={{ top: `${i * (100 / 14)}%` }}
+            />
+          ))}
           
           {/* Start Point */}
           <motion.div 
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring" }}
-            className="absolute top-0 left-1/2 w-6 h-6 rounded-full bg-purple-600 transform -translate-x-1/2 -translate-y-1/2"
+            className="absolute top-0 left-1/2 w-5 h-5 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 transform -translate-x-1/2 -translate-y-1/2 shadow-md z-20"
           />
           
           {/* End Point */}
@@ -244,7 +256,7 @@ export const LearningPath: React.FC = () => {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 1.7, type: "spring" }}
-            className="absolute bottom-0 left-1/2 w-6 h-6 rounded-full bg-pink-600 transform -translate-x-1/2 translate-y-1/2"
+            className="absolute bottom-0 left-1/2 w-5 h-5 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 transform -translate-x-1/2 translate-y-1/2 shadow-md z-20"
           />
 
           {/* Steps */}
