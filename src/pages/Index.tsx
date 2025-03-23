@@ -40,11 +40,11 @@ const Index = () => {
             <HowItWorks />
             
             <div className="mb-20">
-              <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 text-purple-800">
-                Aventuras de Aprendizado
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 text-purple-800">
+                Trilha de Aprendizado
               </h2>
               
-              {/* Replaced card grid with Learning Path */}
+              {/* Learning Path */}
               <LearningPath />
             </div>
             
