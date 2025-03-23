@@ -9,9 +9,10 @@ interface LevelCardProps {
   isLocked?: boolean;
   onStart: () => void;
   level: number;
+  icon?: React.ReactNode;
 }
 
-export const LevelCard = ({ title, description, isLocked = false, onStart, level }: LevelCardProps) => {
+export const LevelCard = ({ title, description, isLocked = false, onStart, level, icon }: LevelCardProps) => {
   return (
     <Card className="p-6 card-hover relative overflow-hidden">
       <div className="absolute top-2 right-2 flex items-center gap-2">
@@ -21,7 +22,7 @@ export const LevelCard = ({ title, description, isLocked = false, onStart, level
       </div>
       <div className="flex items-center gap-4 mb-4">
         <div className="p-3 rounded-full bg-primary/10">
-          <LightbulbIcon className="w-6 h-6 text-primary" />
+          {icon || <LightbulbIcon className="w-6 h-6 text-primary" />}
         </div>
         <h3 className="text-xl font-bold">{title}</h3>
       </div>

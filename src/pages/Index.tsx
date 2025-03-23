@@ -64,7 +64,7 @@ const Index = () => {
                   title="Primeiros Passos"
                   description="Aprenda conceitos básicos de programação de forma interativa."
                   level={1}
-                  icon={<CodeIcon className="h-8 w-8 text-blue-500" />}
+                  icon={<CodeIcon className="h-6 w-6 text-blue-500" />}
                   onStart={() => handleStartLevel(1)}
                 />
               </motion.div>
@@ -78,7 +78,7 @@ const Index = () => {
                   title="CodePets"
                   description="Crie e cuide de pets virtuais enquanto aprende a programar."
                   level={2}
-                  icon={<GamepadIcon className="h-8 w-8 text-green-500" />}
+                  icon={<GamepadIcon className="h-6 w-6 text-green-500" />}
                   onStart={() => handleStartLevel(2)}
                 />
               </motion.div>
@@ -92,7 +92,7 @@ const Index = () => {
                   title="Programação em Blocos"
                   description="Monte sua própria aventura com blocos de código coloridos."
                   level={3}
-                  icon={<BrainIcon className="h-8 w-8 text-yellow-500" />}
+                  icon={<BrainIcon className="h-6 w-6 text-yellow-500" />}
                   onStart={() => handleStartLevel(3)}
                 />
               </motion.div>
@@ -106,7 +106,7 @@ const Index = () => {
                   title="Python Quest"
                   description="Aventure-se no mundo do Python com desafios incríveis."
                   level={4}
-                  icon={<TrophyIcon className="h-8 w-8 text-purple-500" />}
+                  icon={<TrophyIcon className="h-6 w-6 text-purple-500" />}
                   onStart={() => handleStartLevel(4)}
                 />
               </motion.div>
