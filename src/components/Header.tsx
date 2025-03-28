@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   NavigationMenu,
   NavigationMenuContent,
@@ -11,13 +11,50 @@ import {
   navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
-import { Home, BookOpen, Trophy, Users, Menu, X } from "lucide-react";
+import { 
+  Home, 
+  BookOpen, 
+  Trophy, 
+  Users, 
+  Menu, 
+  X, 
+  LogOut,
+  UserCircle
+} from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogin = () => {
+    navigate('/auth');
+    setIsMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    setIsMenuOpen(false);
+  };
+
+  // Get initials from email for avatar
+  const getInitials = () => {
+    if (!user) return "?";
+    const email = user.email || "";
+    return email.charAt(0).toUpperCase();
   };
 
   return (
@@ -132,8 +169,34 @@ export const Header = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <Button variant="outline" size="sm">Entrar</Button>
-          <Button size="sm">Registrar</Button>
+          {!user ? (
+            <>
+              <Button variant="outline" size="sm" onClick={handleLogin}>Entrar</Button>
+              <Button size="sm" onClick={() => navigate('/auth')}>Registrar</Button>
+            </>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>{getInitials()}</AvatarFallback>
+                  </Avatar>
+                  <span className="hidden sm:inline">Perfil</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem className="flex items-center gap-2">
+                  <UserCircle className="h-4 w-4" />
+                  <span>Meu Perfil</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="flex items-center gap-2" onClick={handleLogout}>
+                  <LogOut className="h-4 w-4" />
+                  <span>Sair</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -174,8 +237,17 @@ export const Header = () => {
             </Link>
           </nav>
           <div className="mt-4 flex gap-2">
-            <Button variant="outline" className="flex-1" onClick={() => setIsMenuOpen(false)}>Entrar</Button>
-            <Button className="flex-1" onClick={() => setIsMenuOpen(false)}>Registrar</Button>
+            {!user ? (
+              <>
+                <Button variant="outline" className="flex-1" onClick={handleLogin}>Entrar</Button>
+                <Button className="flex-1" onClick={handleLogin}>Registrar</Button>
+              </>
+            ) : (
+              <Button variant="outline" className="flex-1" onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sair
+              </Button>
+            )}
           </div>
         </div>
       )}
