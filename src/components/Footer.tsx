@@ -10,10 +10,10 @@ export const Footer = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="h-8 w-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                <span className="font-bold text-white text-xs">CK</span>
+                <span className="font-bold text-white text-xs">KD</span>
               </div>
               <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                CodeKidos
+                KiDev
               </span>
             </div>
             <p className="text-sm text-gray-600 mb-4">
@@ -93,7 +93,7 @@ export const Footer = () => {
               <li className="flex items-start gap-2">
                 <Mail className="h-5 w-5 text-purple-500 mt-0.5" />
                 <span className="text-sm text-gray-600">
-                  contato@codekidos.com.br
+                  contato@kidev.com.br
                 </span>
               </li>
               <li>
@@ -122,7 +122,7 @@ export const Footer = () => {
 
         <div className="border-t border-gray-200 mt-12 pt-6 flex flex-col md:flex-row justify-between">
           <p className="text-sm text-gray-500 mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} CodeKidos. Todos os direitos reservados.
+            &copy; {new Date().getFullYear()} KiDev. Todos os direitos reservados.
           </p>
           <div className="flex gap-6">
             <a href="#" className="text-sm text-gray-500 hover:text-purple-600">

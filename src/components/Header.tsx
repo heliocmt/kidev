@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { 
@@ -50,7 +49,6 @@ export const Header = () => {
     setIsMenuOpen(false);
   };
 
-  // Get initials from email for avatar
   const getInitials = () => {
     if (!user) return "?";
     const email = user.email || "";
@@ -62,14 +60,13 @@ export const Header = () => {
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-            <span className="font-bold text-white">CK</span>
+            <span className="font-bold text-white">KD</span>
           </div>
           <Link to="/" className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            CodeKidos
+            KiDev
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
         <div className="hidden md:block">
           <NavigationMenu>
             <NavigationMenuList>
@@ -199,7 +196,6 @@ export const Header = () => {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
         <div className="md:hidden">
           <Button variant="ghost" size="icon" onClick={toggleMenu}>
             {isMenuOpen ? (
@@ -211,7 +207,6 @@ export const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden py-4 px-4 bg-white border-t absolute w-full z-50">
           <nav className="flex flex-col gap-2">

@@ -117,11 +117,11 @@ const Auth = () => {
           <div className="text-center mb-6">
             <Link to="/" className="inline-block">
               <div className="h-16 w-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mx-auto">
-                <span className="font-bold text-white text-2xl">CK</span>
+                <span className="font-bold text-white text-2xl">KD</span>
               </div>
             </Link>
             <h1 className="text-2xl font-bold mt-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              {activeTab === "login" ? "Entrar no CodeKidos" : "Criar Conta"}
+              {activeTab === "login" ? "Entrar no KiDev" : "Criar Conta"}
             </h1>
             <p className="text-gray-600 mt-2">
               {activeTab === "login" 
