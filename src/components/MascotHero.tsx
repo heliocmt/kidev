@@ -20,8 +20,8 @@ export const MascotHero = () => {
               style={{ animationDelay: "300ms" }}></div>
             <div className="absolute inset-0 flex items-center justify-center">
               <img 
-                src="/lovable-uploads/1378b2ea-ef52-4ff1-9e70-08aa688dea16.png" 
-                alt="Pink programmer bird mascot" 
+                src="/lovable-uploads/ff4494f6-4e60-40c7-afc6-416b0efeef5f.png" 
+                alt="Pink programmer bird mascot with glasses" 
                 className="w-full h-full object-contain p-4"
               />
             </div>
