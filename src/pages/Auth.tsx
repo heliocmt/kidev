@@ -18,6 +18,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { Mail, Lock, User, ArrowLeft } from "lucide-react";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -107,16 +109,12 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 flex flex-col">
-      <div className="p-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
-        </Button>
-      </div>
-
-      <div className="flex-grow flex items-center justify-center px-4">
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      
+      <main className="flex-grow flex items-center justify-center py-8 px-4">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <Link to="/" className="inline-block">
               <div className="h-16 w-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mx-auto">
                 <span className="font-bold text-white text-2xl">CK</span>
@@ -253,7 +251,9 @@ const Auth = () => {
             </Tabs>
           </div>
         </div>
-      </div>
+      </main>
+      
+      <Footer />
     </div>
   );
 };
