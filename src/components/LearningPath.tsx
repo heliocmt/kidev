@@ -17,6 +17,7 @@ import {
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
 
 // Define the types for our learning path items
 interface LearningItem {
@@ -26,11 +27,64 @@ interface LearningItem {
   color: string;
   type: 'level' | 'chapter' | 'game' | 'exercise';
   route?: string;
+  description?: string;
 }
+
+interface DescriptionDialogProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  item: LearningItem | null;
+}
+
+const DescriptionDialog: React.FC<DescriptionDialogProps> = ({ isOpen, setIsOpen, item }) => {
+  if (!item) return null;
+
+  const isGame = item.type === 'game';
+  
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent className="max-w-md bg-white/95 backdrop-blur-sm border border-purple-100">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <div className={cn(
+              "w-8 h-8 rounded-full flex items-center justify-center text-white",
+              item.color
+            )}>
+              {item.icon}
+            </div>
+            <span>{item.title}</span>
+          </DialogTitle>
+          <DialogDescription className="pt-4">
+            {item.description || "Descubra mais sobre este conteúdo em breve!"}
+            
+            {item.route && (
+              <div className="mt-4">
+                <Button 
+                  onClick={() => {
+                    setIsOpen(false);
+                    window.location.href = item.route as string;
+                  }}
+                  className={cn(
+                    "w-full",
+                    isGame ? "bg-gradient-to-r from-pink-500 to-purple-500" : "bg-gradient-to-r from-purple-500 to-indigo-500"
+                  )}
+                >
+                  {isGame ? "Jogar Agora!" : "Fazer Exercício"}
+                </Button>
+              </div>
+            )}
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 export const LearningPath: React.FC = () => {
   const navigate = useNavigate();
   const [expandedLevels, setExpandedLevels] = useState<number[]>([1]); // Initially expand the first level
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<LearningItem | null>(null);
 
   const handleItemClick = (item: LearningItem) => {
     if (item.type === 'level') {
@@ -41,16 +95,30 @@ export const LearningPath: React.FC = () => {
       );
       return;
     }
-
-    if (item.route) {
-      navigate(item.route);
-    } else {
-      toast.info(`Em breve: ${item.title}`);
+    
+    if (item.type === 'game' || item.type === 'exercise') {
+      setSelectedItem(item);
+      setDialogOpen(true);
+      return;
     }
   };
 
   // Group items by level
-  const learningPath = [
+  const learningPath: {
+    id: number;
+    title: string;
+    icon: React.ReactNode;
+    color: string;
+    type: 'level';
+    items: {
+      id: number;
+      title: string;
+      icon: React.ReactNode;
+      color: string;
+      type: 'chapter';
+      items: LearningItem[];
+    }[];
+  }[] = [
     // Level 1
     {
       id: 1,
@@ -72,7 +140,8 @@ export const LearningPath: React.FC = () => {
               icon: <Gamepad className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-pink-500 to-pink-400",
               type: 'game',
-              route: '/game'
+              route: '/game',
+              description: "Guie nosso amigo robô através de labirintos divertidos! Arraste blocos de comando para criar uma sequência que o ajude a chegar ao objetivo. Uma aventura emocionante que ensina os primeiros passos da programação de forma visual e intuitiva."
             },
             {
               id: 10102,
@@ -80,7 +149,8 @@ export const LearningPath: React.FC = () => {
               icon: <BookOpen className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-purple-500 to-purple-400",
               type: 'exercise',
-              route: '/codepets'
+              route: '/codepets',
+              description: "Coloque em ordem as ações diárias como escovar os dentes e tomar banho! Este exercício divertido ensina seu filho a pensar de forma organizada e lógica, construindo as bases do pensamento algorítmico que será fundamental na programação."
             }
           ]
         },
@@ -96,14 +166,16 @@ export const LearningPath: React.FC = () => {
               title: "O Caminho Certo!",
               icon: <Gamepad className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-pink-500 to-pink-400",
-              type: 'game'
+              type: 'game',
+              description: "Portas coloridas, decisões importantes! Seu filho aprenderá a usar condições como 'Se a porta for azul, vá para a direita' em um jogo cheio de surpresas e desafios. Uma aventura que desenvolve o raciocínio lógico e a tomada de decisões."
             },
             {
               id: 10202,
               title: "Verdadeiro ou Falso?",
               icon: <BookOpen className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-purple-500 to-purple-400",
-              type: 'exercise'
+              type: 'exercise',
+              description: "Um exercício divertido onde seu filho marcará expressões como verdadeiras ou falsas, aprendendo lógica booleana de forma descontraída. As bases do pensamento computacional sendo construídas enquanto se diverte!"
             }
           ]
         }
@@ -131,14 +203,16 @@ export const LearningPath: React.FC = () => {
               icon: <Gamepad className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-pink-500 to-pink-400",
               type: 'game',
-              route: '/blockcoding'
+              route: '/blockcoding',
+              description: "Faça nosso robô dançar criando sequências de movimentos repetitivos! Uma maneira divertida de aprender sobre loops na programação - 'repita isso 5 vezes'. Seu filho vai adorar ver o resultado de seus comandos na tela!"
             },
             {
               id: 20102,
               title: "Complete o Padrão",
               icon: <BookOpen className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-purple-500 to-purple-400",
-              type: 'exercise'
+              type: 'exercise',
+              description: "Desafie seu filho a identificar padrões e completá-los usando repetições. Este exercício desenvolve o pensamento lógico-matemático e introduz o conceito de loops de forma intuitiva e divertida."
             }
           ]
         },
@@ -154,14 +228,16 @@ export const LearningPath: React.FC = () => {
               title: "Mochila do Aventureiro",
               icon: <Gamepad className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-pink-500 to-pink-400",
-              type: 'game'
+              type: 'game',
+              description: "Ajude nosso aventureiro a guardar e usar itens em sua mochila mágica! Esta atividade ensina como as variáveis funcionam na programação de forma lúdica - armazenando, modificando e utilizando dados para resolver desafios."
             },
             {
               id: 20202,
               title: "Qual é o Valor?",
               icon: <BookOpen className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-purple-500 to-purple-400",
-              type: 'exercise'
+              type: 'exercise',
+              description: "Um exercício interativo onde seu filho vai descobrir como valores mudam em tempo real! Aprenda sobre variáveis enquanto resolve quebra-cabeças divertidos que estimulam o raciocínio lógico."
             }
           ]
         }
@@ -188,14 +264,16 @@ export const LearningPath: React.FC = () => {
               title: "Montando um Robô",
               icon: <Gamepad className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-pink-500 to-pink-400",
-              type: 'game'
+              type: 'game',
+              description: "Crie seu próprio robô personalizado usando funções pré-definidas como 'andar()' e 'pular()'! Uma experiência criativa que ensina como reutilizar blocos de código para criar algo maior e mais complexo."
             },
             {
               id: 30102,
               title: "Quebra-cabeça de Funções",
               icon: <BookOpen className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-purple-500 to-purple-400",
-              type: 'exercise'
+              type: 'exercise',
+              description: "Monte blocos de código que chamam diferentes funções para resolver desafios criativos. Este exercício desenvolve o pensamento abstrato e ensina modularização de forma divertida."
             }
           ]
         },
@@ -211,14 +289,16 @@ export const LearningPath: React.FC = () => {
               title: "Caça aos Bugs!",
               icon: <Gamepad className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-pink-500 to-pink-400",
-              type: 'game'
+              type: 'game',
+              description: "Transforme seu filho em um detetive de código! Encontre e corrija os 'bugs' em códigos mal escritos. Um jogo que ensina habilidades essenciais de depuração e resolução de problemas de forma divertida."
             },
             {
               id: 30202,
               title: "Onde está o erro?",
               icon: <BookOpen className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-purple-500 to-purple-400",
-              type: 'exercise'
+              type: 'exercise',
+              description: "Identifique erros comuns de programação como variáveis mal nomeadas ou loops infinitos. Este exercício desenvolve o pensamento crítico e a capacidade de análise, habilidades fundamentais para todo programador!"
             }
           ]
         }
@@ -245,14 +325,16 @@ export const LearningPath: React.FC = () => {
               title: "O Show do Pixel!",
               icon: <Gamepad className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-pink-500 to-pink-400",
-              type: 'game'
+              type: 'game',
+              description: "Dê vida aos pixels com coordenadas e comandos simples! Seu filho vai criar suas primeiras animações digitais e descobrir o poder criativo da programação. Uma experiência visual e artística que vai encantar!"
             },
             {
               id: 40102,
               title: "Mova o Personagem!",
               icon: <BookOpen className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-purple-500 to-purple-400",
-              type: 'exercise'
+              type: 'exercise',
+              description: "Crie códigos simples para movimentar personagens no plano cartesiano. Este exercício prático ensina conceitos de coordenadas e animação de forma intuitiva enquanto desenvolve habilidades de programação."
             }
           ]
         },
@@ -268,14 +350,16 @@ export const LearningPath: React.FC = () => {
               title: "O Jogo do Clic!",
               icon: <Gamepad className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-pink-500 to-pink-400",
-              type: 'game'
+              type: 'game',
+              description: "Programe reações divertidas para cliques e teclas! Este jogo ensina interatividade e programação orientada a eventos de forma lúdica e criativa, estimulando a experimentação."
             },
             {
               id: 40202,
               title: "Responda ao Toque",
               icon: <BookOpen className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-purple-500 to-purple-400",
-              type: 'exercise'
+              type: 'exercise',
+              description: "Crie respostas para diferentes eventos como 'quando o mouse clicar, mude a cor'. Um exercício prático que ensina os fundamentos da interação entre usuário e programa."
             }
           ]
         }
@@ -302,14 +386,16 @@ export const LearningPath: React.FC = () => {
               title: "Construtor de Mundos",
               icon: <Gamepad className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-pink-500 to-pink-400",
-              type: 'game'
+              type: 'game',
+              description: "Use nossa ferramenta simplificada para criar seu próprio mundo de jogo! Esta atividade divertida permite que seu filho aplique tudo o que aprendeu para desenvolver sua primeira criação digital interativa."
             },
             {
               id: 50102,
               title: "Monte Seu Código!",
               icon: <BookOpen className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-purple-500 to-purple-400",
-              type: 'exercise'
+              type: 'exercise',
+              description: "Combine blocos de código para criar um jogo funcional! Este exercício desafiador integra todos os conceitos aprendidos até agora em um projeto final empolgante e recompensador."
             }
           ]
         },
@@ -326,14 +412,16 @@ export const LearningPath: React.FC = () => {
               icon: <Gamepad className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-pink-500 to-pink-400",
               type: 'game',
-              route: '/pythonquest'
+              route: '/pythonquest',
+              description: "Dê seus primeiros passos com código real em Python! Este jogo guiado permite que seu filho escreva pequenas linhas de código que ganham vida na tela, criando uma ponte entre a programação visual e a textual."
             },
             {
               id: 50202,
               title: "Debugando o Código Final",
               icon: <BookOpen className="h-6 w-6" />,
               color: "bg-gradient-to-tr from-purple-500 to-purple-400",
-              type: 'exercise'
+              type: 'exercise',
+              description: "Chegou o momento de revisar e testar seu primeiro mini-projeto Python! Este exercício final consolida todo o aprendizado e prepara seu filho para explorar ainda mais o mundo da programação."
             }
           ]
         }
@@ -449,6 +537,13 @@ export const LearningPath: React.FC = () => {
           Iniciar Aventura
         </Button>
       </div>
+
+      {/* Dialog for displaying more information */}
+      <DescriptionDialog 
+        isOpen={dialogOpen} 
+        setIsOpen={setDialogOpen} 
+        item={selectedItem} 
+      />
     </div>
   );
 };
