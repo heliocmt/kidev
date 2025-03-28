@@ -18,8 +18,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { Mail, Lock, User, ArrowLeft } from "lucide-react";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -109,37 +107,42 @@ const Auth = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="absolute top-4 left-4">
+        <Link to="/" className="flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors">
+          <ArrowLeft className="h-4 w-4" />
+          <span className="text-sm">Voltar para página inicial</span>
+        </Link>
+      </div>
       
-      <main className="flex-grow flex items-center justify-center py-8 px-4">
+      <main className="flex-grow flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
-          <div className="text-center mb-6">
+          <div className="text-center mb-8">
             <Link to="/" className="inline-block">
               <div className="h-16 w-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mx-auto">
                 <span className="font-bold text-white text-2xl">KD</span>
               </div>
             </Link>
-            <h1 className="text-2xl font-bold mt-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              {activeTab === "login" ? "Entrar no KiDev" : "Criar Conta"}
+            <h1 className="text-3xl font-bold mt-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              {activeTab === "login" ? "Bem-vindo de volta!" : "Junte-se a nós"}
             </h1>
-            <p className="text-gray-600 mt-2">
+            <p className="text-gray-600 mt-3">
               {activeTab === "login" 
-                ? "Acesse sua conta para continuar aprendendo" 
-                : "Junte-se à nossa comunidade de pequenos programadores"}
+                ? "Entre para continuar sua jornada de aprendizado" 
+                : "Comece sua aventura de programação hoje"}
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-md">
+          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
             <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "login" | "register")}>
-              <TabsList className="grid grid-cols-2 w-full mb-6">
+              <TabsList className="grid grid-cols-2 w-full mb-8">
                 <TabsTrigger value="login">Login</TabsTrigger>
                 <TabsTrigger value="register">Registrar</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login">
                 <Form {...loginForm}>
-                  <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+                  <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-5">
                     <FormField
                       control={loginForm.control}
                       name="email"
@@ -172,14 +175,14 @@ const Auth = () => {
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" className="w-full">Entrar</Button>
+                    <Button type="submit" className="w-full py-6">Entrar</Button>
                   </form>
                 </Form>
               </TabsContent>
 
               <TabsContent value="register">
                 <Form {...registerForm}>
-                  <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
+                  <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-5">
                     <FormField
                       control={registerForm.control}
                       name="username"
@@ -244,7 +247,7 @@ const Auth = () => {
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" className="w-full">Registrar</Button>
+                    <Button type="submit" className="w-full py-6">Registrar</Button>
                   </form>
                 </Form>
               </TabsContent>
@@ -253,7 +256,9 @@ const Auth = () => {
         </div>
       </main>
       
-      <Footer />
+      <div className="py-4 text-center text-sm text-gray-500">
+        &copy; {new Date().getFullYear()} KiDev. Todos os direitos reservados.
+      </div>
     </div>
   );
 };
