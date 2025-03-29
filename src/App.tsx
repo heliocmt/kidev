@@ -13,6 +13,7 @@ import BlockCoding from "./pages/BlockCoding";
 import PythonQuest from "./pages/PythonQuest";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Dashboard from "./pages/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/blockcoding" element={<BlockCoding />} />
             <Route path="/pythonquest" element={<PythonQuest />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
