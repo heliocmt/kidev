@@ -6,7 +6,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0'
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+};
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -25,67 +25,62 @@ serve(async (req) => {
     const token = authHeader.replace('Bearer ', '')
     const { data } = await supabaseClient.auth.getUser(token)
     const user = data.user
-    const email = user?.email
 
-    if (!email) {
-      throw new Error('Usuário não autenticado')
+    if (!user || !user.email) {
+      return new Response(
+        JSON.stringify({ 
+          subscribed: false,
+          error: "Usuário não autenticado"
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      )
     }
 
     const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
       apiVersion: '2023-10-16',
     })
 
+    // Get customer by email
     const customers = await stripe.customers.list({
-      email: email,
+      email: user.email,
       limit: 1
     })
 
-    const price_id = "price_1R8WCqGkZ57MywFRQAmNtMSc"  // ID do preço do Clube KiDev
-
-    let customer_id = undefined
-    if (customers.data.length > 0) {
-      customer_id = customers.data[0].id
-      // Verificar se já está inscrito neste preço
-      const subscriptions = await stripe.subscriptions.list({
-        customer: customers.data[0].id,
-        status: 'active',
-        price: price_id,
-        limit: 1
-      })
-
-      if (subscriptions.data.length > 0) {
-        throw new Error("Cliente já possui esta assinatura")
-      }
+    if (customers.data.length === 0) {
+      return new Response(
+        JSON.stringify({ subscribed: false }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      )
     }
 
-    console.log('Criando sessão de pagamento...')
-    const session = await stripe.checkout.sessions.create({
-      customer: customer_id,
-      customer_email: customer_id ? undefined : email,
-      line_items: [
-        {
-          price: price_id,
-          quantity: 1,
-        },
-      ],
-      mode: 'subscription',
-      success_url: `${req.headers.get('origin')}/payment-success?plan=KiDev`,
-      cancel_url: `${req.headers.get('origin')}/payments`,
+    const subscriptions = await stripe.subscriptions.list({
+      customer: customers.data[0].id,
+      status: 'active',
+      price: 'price_1R8WCqGkZ57MywFRQAmNtMSc', // Price ID do Clube KiDev
+      limit: 1
     })
 
-    console.log('Sessão de pagamento criada:', session.id)
     return new Response(
-      JSON.stringify({ url: session.url }),
-      { 
+      JSON.stringify({ 
+        subscribed: subscriptions.data.length > 0,
+      }),
+      {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
       }
     )
+
   } catch (error) {
-    console.error('Erro ao criar sessão de pagamento:', error)
+    console.error('Erro ao verificar assinatura:', error)
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { 
+      JSON.stringify({ error: error.message, subscribed: false }),
+      {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500,
       }

@@ -3,10 +3,49 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const MascotHero = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Função para verificar a assinatura e redirecionar o usuário
+  const handleNavigation = async (destination: string) => {
+    setIsLoading(true);
+    
+    // Se o usuário não estiver logado, redireciona para autenticação
+    if (!user) {
+      setIsLoading(false);
+      navigate("/auth");
+      return;
+    }
+    
+    try {
+      // Verificar status de assinatura através da edge function
+      const { data, error } = await supabase.functions.invoke("check-subscription", {
+        body: {},
+      });
+      
+      if (error) throw error;
+      
+      // Redireciona com base no status da assinatura
+      if (data?.subscribed) {
+        navigate("/dashboard");
+      } else {
+        // Se não tem assinatura, redireciona para pagamentos
+        navigate("/payments");
+      }
+    } catch (error) {
+      console.error("Erro ao verificar assinatura:", error);
+      toast.error("Não foi possível verificar sua assinatura. Redirecionando para o dashboard.");
+      navigate("/dashboard");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   return (
     <div className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white py-20 px-4 md:px-8 overflow-hidden">
@@ -45,16 +84,34 @@ export const MascotHero = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
             {user ? (
-              <Button size="lg" variant="outline" onClick={() => navigate('/dashboard')} className="border-white hover:bg-white/20 text-lg px-8 py-6">
-                Meu Dashboard
+              <Button 
+                size="lg" 
+                variant="outline" 
+                onClick={() => handleNavigation('/dashboard')} 
+                className="border-white hover:bg-white/20 text-lg px-8 py-6"
+                disabled={isLoading}
+              >
+                {isLoading ? "Carregando..." : "Meu Dashboard"}
               </Button>
             ) : (
-              <Button size="lg" variant="outline" onClick={() => navigate('/game')} className="border-white hover:bg-white/20 text-lg px-8 py-6 text-purple-600">
-                Começar Agora
+              <Button 
+                size="lg" 
+                variant="outline" 
+                onClick={() => handleNavigation('/game')} 
+                className="border-white hover:bg-white/20 text-lg px-8 py-6 text-white"
+                disabled={isLoading}
+              >
+                {isLoading ? "Carregando..." : "Começar Agora"}
               </Button>
             )}
-            <Button size="lg" variant="outline" onClick={() => navigate('/blockcoding')} className="border-white hover:bg-white/20 text-lg px-8 py-6 text-purple-600">
-              Explorar Jogos
+            <Button 
+              size="lg" 
+              variant="outline" 
+              onClick={() => handleNavigation('/blockcoding')} 
+              className="border-white hover:bg-white/20 text-lg px-8 py-6 text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? "Carregando..." : "Explorar Jogos"}
             </Button>
           </div>
         </motion.div>
