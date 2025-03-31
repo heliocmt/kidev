@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -10,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { Check, Crown, Star, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "sonner";
+import { toast } from "sonner";
 
 const plans = [
   {
@@ -68,7 +67,6 @@ export default function Payments() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
-  const toast = useToast;
 
   const handleSelectPlan = async (plan) => {
     try {
