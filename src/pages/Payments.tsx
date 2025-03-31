@@ -8,16 +8,40 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { Check, Crown, CreditCard, Star, Trophy } from "lucide-react";
+import { Check, Crown, CreditCard, Star, Trophy, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const paymentFormSchema = z.object({
+  fullName: z.string().min(3, "Nome completo é necessário"),
+  cardNumber: z.string().min(16, "Número de cartão inválido").max(19),
+  expiry: z.string().min(5, "Data de expiração inválida"),
+  cvc: z.string().min(3, "CVC inválido").max(4),
+});
 
 export default function Payments() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loadingPlan, setLoadingPlan] = useState(false);
+  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
   const [prices, setPrices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const form = useForm({
+    resolver: zodResolver(paymentFormSchema),
+    defaultValues: {
+      fullName: "",
+      cardNumber: "",
+      expiry: "",
+      cvc: "",
+    },
+  });
 
   useEffect(() => {
     const fetchPrices = async () => {
@@ -51,15 +75,17 @@ export default function Payments() {
     fetchPrices();
   }, []);
 
-  const handleSelectPlan = async () => {
+  const handleSelectPlan = () => {
+    setIsPaymentDialogOpen(true);
+  };
+
+  const handlePaymentSubmit = async (data) => {
     try {
       setLoadingPlan(true);
       
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
+      const { data: checkoutData, error } = await supabase.functions.invoke('create-checkout', {
         body: {
-          // Replace this with the actual price ID from your Stripe account
-          priceId: 'price_1PfDV6I1q9Mtk3PrPYCLT8Rf',
-          productId: 'prod_S2bPFyKAP7iitN'
+          priceId: 'price_1R8WCqGkZ57MywFRQAmNtMSc'
         }
       });
       
@@ -67,8 +93,8 @@ export default function Payments() {
         throw error;
       }
       
-      if (data?.url) {
-        window.location.href = data.url;
+      if (checkoutData?.url) {
+        window.location.href = checkoutData.url;
       } else {
         throw new Error('Failed to create checkout session');
       }
@@ -177,6 +203,97 @@ export default function Payments() {
             </Card>
           </motion.div>
         </div>
+        
+        <Dialog open={isPaymentDialogOpen} onOpenChange={setIsPaymentDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Informações de Pagamento</DialogTitle>
+              <DialogDescription>
+                Complete seus dados para finalizar a assinatura do Clube KiDev
+              </DialogDescription>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handlePaymentSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="fullName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nome Completo</FormLabel>
+                      <FormControl>
+                        <Input placeholder="João Silva" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cardNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Número do Cartão</FormLabel>
+                      <FormControl>
+                        <Input placeholder="4242 4242 4242 4242" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="expiry"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Data de Expiração</FormLabel>
+                        <FormControl>
+                          <Input placeholder="MM/AA" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="cvc"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>CVC</FormLabel>
+                        <FormControl>
+                          <Input placeholder="123" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setIsPaymentDialogOpen(false)}
+                  >
+                    <X className="mr-2 h-4 w-4" />
+                    Cancelar
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                    disabled={loadingPlan}
+                  >
+                    {loadingPlan ? 'Processando...' : (
+                      <>
+                        <CreditCard className="mr-2 h-4 w-4" />
+                        Finalizar Pagamento
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
         
         <div className="max-w-4xl mx-auto mt-16 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-gray-100 shadow-md">
           <div className="flex flex-col md:flex-row gap-6 items-center">
