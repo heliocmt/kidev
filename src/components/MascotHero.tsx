@@ -90,7 +90,7 @@ export const MascotHero = () => {
               </Button> : <Button size="lg" variant="outline" onClick={() => handleNavigation('/game')} className="border-white hover:bg-white/20 text-lg px-8 py-6 text-white" disabled={isLoading}>
                 {isLoading ? "Carregando..." : "Começar Agora"}
               </Button>}
-            <Button size="lg" variant="outline" onClick={() => handleNavigation('/blockcoding')} className="border-white hover:bg-white/20 text-lg px-8 py-6 text-white" disabled={isLoading}>
+            <Button size="lg" variant="outline" onClick={() => handleNavigation('/blockcoding')} disabled={isLoading} className="border-white hover:bg-white/20 text-lg px-8 py-6 text-violet-600">
               {isLoading ? "Carregando..." : "Explorar Jogos"}
             </Button>
           </div>
