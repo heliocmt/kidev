@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Header } from "@/components/Header";
@@ -7,75 +8,58 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { Check, Crown, Star, Trophy } from "lucide-react";
+import { Check, Crown, CreditCard, Star, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-const plans = [
-  {
-    id: 'basic',
-    name: 'Plano Básico',
-    priceId: 'price_1PjGbCJX1Z3Y2RVw1Z2VtFK4',  // Replace with your actual Price ID
-    price: 'R$19,90',
-    interval: 'mês',
-    features: [
-      'Acesso a todos os jogos de programação',
-      'Trilha de aprendizado básica',
-      'Suporte por e-mail',
-    ],
-    badge: '',
-    color: 'from-blue-500 to-cyan-400',
-    popular: false
-  },
-  {
-    id: 'premium',
-    name: 'Plano Premium',
-    priceId: 'price_1PjGbCJX1Z3Y2RVw1Z2VtFP7',  // Replace with your actual Price ID
-    price: 'R$29,90',
-    interval: 'mês',
-    features: [
-      'Tudo do plano básico',
-      'Trilhas avançadas',
-      'Projetos exclusivos',
-      'Certificados de conclusão',
-      'Suporte prioritário',
-    ],
-    badge: 'Popular',
-    color: 'from-purple-500 to-pink-500',
-    popular: true
-  },
-  {
-    id: 'family',
-    name: 'Plano Família',
-    priceId: 'price_1PjGbCJX1Z3Y2RVw1Z2VtGK9',  // Replace with your actual Price ID
-    price: 'R$49,90',
-    interval: 'mês',
-    features: [
-      'Tudo do plano premium',
-      'Até 4 perfis de usuários',
-      'Acompanhamento de progresso',
-      'Conteúdo adicional para pais',
-      'Suporte VIP',
-    ],
-    badge: '',
-    color: 'from-amber-500 to-orange-500',
-    popular: false
-  }
-];
 
 export default function Payments() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [loadingPlan, setLoadingPlan] = useState(false);
+  const [prices, setPrices] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleSelectPlan = async (plan) => {
+  useEffect(() => {
+    const fetchPrices = async () => {
+      setIsLoading(true);
+      try {
+        // We would fetch prices from an edge function, but for now let's define it statically
+        setPrices([
+          {
+            id: 'clube-kidev',
+            name: 'Clube KiDev',
+            description: 'Plano mensal de acesso a todos os conteúdos e jogos',
+            features: [
+              'Acesso a todos os jogos de programação',
+              'Trilha de aprendizado completa',
+              'Certificados de conclusão',
+              'Suporte prioritário',
+              'Projetos exclusivos para crianças',
+            ],
+            color: 'from-purple-500 to-pink-500',
+            popular: true
+          }
+        ]);
+      } catch (error) {
+        console.error('Error fetching prices:', error);
+        toast.error('Não foi possível carregar os planos. Por favor, tente novamente.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPrices();
+  }, []);
+
+  const handleSelectPlan = async () => {
     try {
-      setLoadingPlan(plan.id);
+      setLoadingPlan(true);
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
-          priceId: plan.priceId,
-          planName: plan.name,
+          // Replace this with the actual price ID from your Stripe account
+          priceId: 'price_1PfDV6I1q9Mtk3PrPYCLT8Rf',
+          productId: 'prod_S2bPFyKAP7iitN'
         }
       });
       
@@ -92,7 +76,7 @@ export default function Payments() {
       console.error('Payment error:', error);
       toast.error('Erro ao processar pagamento. Por favor, tente novamente.');
     } finally {
-      setLoadingPlan(null);
+      setLoadingPlan(false);
     }
   };
 
@@ -107,7 +91,7 @@ export default function Payments() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
           >
-            Escolha o Plano Ideal
+            Clube KiDev
           </motion.h1>
           
           <motion.p 
@@ -116,7 +100,7 @@ export default function Payments() {
             transition={{ delay: 0.1 }}
             className="text-lg text-gray-700 max-w-3xl mx-auto mb-6"
           >
-            Desbloqueie todo o potencial criativo da criança com nossos planos acessíveis
+            Desbloqueie todo o potencial criativo da criança com nosso clube exclusivo
           </motion.p>
           
           {!user && (
@@ -131,53 +115,67 @@ export default function Payments() {
           )}
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan, index) => (
-            <motion.div
-              key={plan.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * index }}
-            >
-              <Card className={`h-full overflow-hidden border-2 ${plan.popular ? 'border-purple-300' : 'border-transparent'} ${plan.popular ? 'shadow-xl' : 'shadow-md'}`}>
-                <div className={`h-2 w-full bg-gradient-to-r ${plan.color}`}></div>
-                <CardHeader className="pt-6">
-                  {plan.badge && (
-                    <Badge className="w-fit mx-auto bg-gradient-to-r from-purple-600 to-pink-500 mb-2 px-3">
-                      {plan.badge}
-                    </Badge>
+        <div className="max-w-xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Card className="h-full overflow-hidden border-2 border-purple-300 shadow-xl">
+              <div className="h-2 w-full bg-gradient-to-r from-purple-500 to-pink-500"></div>
+              <CardHeader className="pt-6">
+                <Badge className="w-fit mx-auto bg-gradient-to-r from-purple-600 to-pink-500 mb-2 px-3">
+                  Premium
+                </Badge>
+                <CardTitle className="text-2xl text-center">
+                  <Crown size={20} className="inline mr-2 text-amber-500" />
+                  Clube KiDev
+                </CardTitle>
+                <div className="text-center">
+                  <span className="text-3xl font-bold">R$29,90</span>
+                  <span className="text-gray-600">/mês</span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex items-center gap-2">
+                    <Check size={18} className="text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Acesso a todos os jogos de programação</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check size={18} className="text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Trilha de aprendizado completa</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check size={18} className="text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Certificados de conclusão</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check size={18} className="text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Suporte prioritário</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check size={18} className="text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Projetos exclusivos para crianças</span>
+                  </li>
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button 
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                  onClick={handleSelectPlan}
+                  disabled={loadingPlan}
+                >
+                  {loadingPlan ? 'Processando...' : (
+                    <>
+                      <CreditCard className="mr-2" />
+                      Assinar Agora
+                    </>
                   )}
-                  <CardTitle className="text-2xl text-center">
-                    {plan.id === 'premium' && <Crown size={20} className="inline mr-2 text-amber-500" />}
-                    {plan.name}
-                  </CardTitle>
-                  <div className="text-center">
-                    <span className="text-3xl font-bold">{plan.price}</span>
-                    <span className="text-gray-600">/{plan.interval}</span>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <Check size={18} className="text-green-500 flex-shrink-0" />
-                        <span className="text-gray-700">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    className={`w-full ${plan.popular ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600' : ''}`}
-                    onClick={() => handleSelectPlan(plan)}
-                    disabled={loadingPlan === plan.id}
-                  >
-                    {loadingPlan === plan.id ? 'Processando...' : 'Assinar Agora'}
-                  </Button>
-                </CardFooter>
-              </Card>
-            </motion.div>
-          ))}
+                </Button>
+              </CardFooter>
+            </Card>
+          </motion.div>
         </div>
         
         <div className="max-w-4xl mx-auto mt-16 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-gray-100 shadow-md">
@@ -204,4 +202,4 @@ export default function Payments() {
       <Footer />
     </div>
   );
-};
+}

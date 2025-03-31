@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { priceId, planName } = await req.json();
+    const { priceId } = await req.json();
     
     if (!priceId) {
       throw new Error('Price ID is required');
@@ -54,13 +54,13 @@ serve(async (req) => {
     }
     
     // Create session parameters based on whether user is logged in
-    const sessionParams = {
+    const sessionParams: any = {
       line_items: [{
         price: priceId,
         quantity: 1,
       }],
       mode: 'subscription',
-      success_url: `${req.headers.get('origin')}/payment-success?plan=${planName}`,
+      success_url: `${req.headers.get('origin')}/payment-success?plan=Clube KiDev`,
       cancel_url: `${req.headers.get('origin')}/payments`,
     };
     
