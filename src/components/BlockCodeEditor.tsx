@@ -122,16 +122,16 @@ export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+      <div className="mb-4 p-4 bg-gray-50 rounded-lg overflow-hidden">
         <h3 className="font-bold mb-3 text-gray-700">Comandos Disponíveis</h3>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
           {filteredBlocks.map((block) => (
             <motion.div
               key={block.id}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => addBlock(block.id)}
-              className={`${block.color} text-white px-3 py-2 rounded-md cursor-pointer flex items-center shadow-sm`}
+              className={`${block.color} text-white px-3 py-2 rounded-md cursor-pointer flex items-center shadow-sm flex-shrink-0`}
             >
               {block.icon && <span className="mr-2">{block.icon}</span>}
               {block.label}
@@ -140,7 +140,7 @@ export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({
         </div>
       </div>
 
-      <div className="flex-1 min-h-[300px] border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50">
+      <div className="flex-1 border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50 flex flex-col max-h-[360px]">
         <div className="flex justify-between mb-4">
           <h3 className="font-bold text-gray-700">Sequência de Comandos</h3>
           {blocks.length > 0 && (
@@ -156,7 +156,7 @@ export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({
           )}
         </div>
         
-        <div className="overflow-y-auto max-h-[300px]">
+        <div className="overflow-y-auto flex-1 mb-4">
           {blocks.length === 0 ? (
             <div className="flex items-center justify-center h-48 text-gray-400 text-center">
               Arraste comandos para programar seu robô
@@ -197,7 +197,7 @@ export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({
         
         {/* Action buttons moved here from the Robo component */}
         {onRunCode && onReset && (
-          <div className="mt-6 flex justify-center gap-4">
+          <div className="mt-auto flex justify-center gap-4">
             <Button 
               onClick={onReset}
               variant="outline" 

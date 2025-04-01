@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -346,13 +345,23 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     
   }, [isRunning, codeBlocks, level]);
 
+  const nextLevel = () => {
+    
+  };
+
   return (
     <div className="h-full flex flex-col">
-      <div className="bg-white border-2 border-gray-100 rounded-lg p-2 flex-1 min-h-[300px] flex items-center justify-center">
-        <div className="relative">
+      <div className="bg-white border-2 border-gray-100 rounded-lg p-2 flex-1 min-h-[300px] flex items-center justify-center overflow-hidden">
+        <div className="relative max-w-full max-h-full">
           <canvas 
             ref={canvasRef} 
-            className="border border-gray-300 bg-blue-50 shadow-md"
+            className="border border-gray-300 bg-blue-50 shadow-md max-w-full max-h-full"
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+              height: 'auto',
+              width: 'auto',
+            }}
           />
           
           {success !== null && (
