@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -30,6 +31,7 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
   const [executionPath, setExecutionPath] = useState<{x: number, y: number, direction: string}[]>([]);
   const [reachedGoal, setReachedGoal] = useState(false);
 
+  // Reset robot state when level changes
   useEffect(() => {
     setRobotPosition(level.startPosition);
     setRobotDirection(level.startDirection);
@@ -38,6 +40,7 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     setReachedGoal(false);
   }, [level]);
 
+  // Draw the robot playground
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -49,8 +52,10 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     canvas.width = level.grid[0].length * cellSize;
     canvas.height = level.grid.length * cellSize;
     
+    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    // Draw grid and cells
     for (let y = 0; y < level.grid.length; y++) {
       for (let x = 0; x < level.grid[y].length; x++) {
         const cell = level.grid[y][x];
@@ -100,6 +105,7 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
       }
     }
     
+    // Draw execution path
     executionPath.forEach((step, index) => {
       if (index > 0) {
         ctx.fillStyle = 'rgba(59, 130, 246, 0.2)';
@@ -113,6 +119,7 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
       }
     });
     
+    // Draw robot with direction indicator
     ctx.save();
     ctx.translate(
       robotPosition.x * cellSize + cellSize/2, 
@@ -127,39 +134,43 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     };
     ctx.rotate(rotationDegrees[robotDirection] * Math.PI / 180);
     
+    // Robot body
     ctx.fillStyle = '#3b82f6';
     ctx.beginPath();
     ctx.arc(0, 0, cellSize/3, 0, 2 * Math.PI);
     ctx.fill();
     
+    // Direction indicator (white circle)
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
     ctx.arc(0, -cellSize/6, cellSize/8, 0, 2 * Math.PI);
     ctx.fill();
     
     ctx.restore();
+    
+    // Add data attributes for success detection
+    const robotElement = document.querySelector('.robot-position');
+    if (robotElement) {
+      robotElement.setAttribute('data-x', robotPosition.x.toString());
+      robotElement.setAttribute('data-y', robotPosition.y.toString());
+    }
   }, [level, robotPosition, robotDirection, collectedItems, executionPath]);
 
+  // Check if robot reached the goal
   useEffect(() => {
-    if (level.goalPosition) {
-      if (robotPosition.x === level.goalPosition.x && robotPosition.y === level.goalPosition.y) {
-        setReachedGoal(true);
-      }
-    } else {
-      for (let y = 0; y < level.grid.length; y++) {
-        for (let x = 0; x < level.grid[y].length; x++) {
-          if (level.grid[y][x].type === 'goal' && 
-              robotPosition.x === x && robotPosition.y === y) {
-            setReachedGoal(true);
-          }
-        }
-      }
+    if (!level.goalPosition) return;
+    
+    if (robotPosition.x === level.goalPosition.x && 
+        robotPosition.y === level.goalPosition.y) {
+      setReachedGoal(true);
     }
-  }, [robotPosition, level]);
+  }, [robotPosition, level.goalPosition]);
 
+  // Execute code blocks when running
   useEffect(() => {
     if (!isRunning || codeBlocks.length === 0) return;
     
+    // Reset robot state
     setRobotPosition({...level.startPosition});
     setRobotDirection(level.startDirection);
     setCollectedItems([]);
@@ -194,6 +205,7 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
             const newPos = {...pos};
             const nextPos = {...pos};
             
+            // Move in the direction the robot is facing
             switch (robotDirection) {
               case 'up': nextPos.y = Math.max(0, pos.y - 1); break;
               case 'right': nextPos.x = Math.min(level.grid[0].length - 1, pos.x + 1); break;
@@ -211,6 +223,14 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
                 
                 if (nextCell.type === 'collectible') {
                   setCollectedItems(items => [...items, {x: nextPos.x, y: nextPos.y}]);
+                }
+                
+                // Check if reached goal
+                if (nextCell.type === 'goal' || 
+                    (level.goalPosition && 
+                     nextPos.x === level.goalPosition.x && 
+                     nextPos.y === level.goalPosition.y)) {
+                  setReachedGoal(true);
                 }
               }
             }
@@ -302,17 +322,15 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     setTimeout(executeNextBlock, 500);
   }, [isRunning, codeBlocks, level]);
 
-  const nextLevel = () => {
-    
-  };
-
   return (
     <div className="h-full flex flex-col">
       <div className="bg-white border-2 border-gray-100 rounded-lg p-2 flex-1 overflow-hidden" style={{ height: '360px', minHeight: '360px', maxHeight: '360px' }}>
         <div className="relative flex items-center justify-center h-full w-full">
           <canvas 
             ref={canvasRef} 
-            className="border border-gray-300 bg-blue-50 shadow-md"
+            className="border border-gray-300 bg-blue-50 shadow-md robot-position"
+            data-x={robotPosition.x}
+            data-y={robotPosition.y}
             style={{
               maxWidth: '100%',
               maxHeight: '100%',
@@ -340,16 +358,7 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
           )}
         </div>
       </div>
-      
-      {/* Debug info for development */}
-      {/*
-      <div className="mt-2 text-xs text-gray-500">
-        <div>Posição: x={robotPosition.x}, y={robotPosition.y}</div>
-        <div>Direção: {robotDirection}</div>
-        <div>Meta alcançada: {reachedGoal ? 'Sim' : 'Não'}</div>
-      </div>
-      */}
-      
     </div>
   );
 };
+

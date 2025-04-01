@@ -53,13 +53,15 @@ const Robo = () => {
         codeBlocks.some(b => b === block)
       );
       
-      const isSuccessful = isAtGoal && requiredBlocksUsed;
+      let isSuccessful = false;
       
       if (level.id === 4) {
-        setSuccess(isAtGoal && allCollected);
-      } else {
-        setSuccess(isSuccessful);
+        isSuccessful = isAtGoal && allCollected;
+      } else if (level.id === 1 || level.id === 2 || level.id === 3 || level.id === 5) {
+        isSuccessful = isAtGoal && requiredBlocksUsed;
       }
+      
+      setSuccess(isSuccessful);
       
       if (isSuccessful) {
         toast.success("Missão cumprida! Robô chegou ao objetivo.", {
