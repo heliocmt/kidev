@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import Payments from "./pages/Payments";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import Robo from "./pages/Robo";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/payments" element={<Payments />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/robo" element={<Robo />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
