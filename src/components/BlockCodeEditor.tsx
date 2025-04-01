@@ -9,19 +9,28 @@ import {
   CircleIcon, 
   RepeatIcon, 
   SplitIcon, 
-  Trash2Icon 
+  Trash2Icon,
+  PlayIcon
 } from 'lucide-react';
 
 interface BlockCodeEditorProps {
   onUpdateBlocks: (blocks: string[]) => void;
   blocks: string[];
   availableBlocks?: string[];
+  onRunCode?: () => void;
+  onReset?: () => void;
+  isRunning?: boolean;
+  success?: boolean | null;
 }
 
 export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({ 
   onUpdateBlocks, 
   blocks,
-  availableBlocks = ['move-forward', 'turn-left', 'turn-right', 'collect', 'loop-start-3', 'loop-end', 'if-path']
+  availableBlocks = ['move-forward', 'turn-left', 'turn-right', 'collect', 'loop-start-3', 'loop-end', 'if-path'],
+  onRunCode,
+  onReset,
+  isRunning,
+  success
 }) => {
   const allBlocks = [
     { 
@@ -147,40 +156,65 @@ export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({
           )}
         </div>
         
-        {blocks.length === 0 ? (
-          <div className="flex items-center justify-center h-48 text-gray-400 text-center">
-            Arraste comandos para programar seu robô
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {blocks.map((blockId, index) => {
-              const { color, label, icon, isEndBlock } = getBlockStyle(blockId);
-              const indent = getIndentation(index);
-              
-              return (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  className={`${color} text-white px-3 py-2 rounded-md flex items-center justify-between`}
-                  style={{ marginLeft: `${indent * 20}px` }}
-                >
-                  <div className="flex items-center">
-                    {icon && <span className="mr-2">{icon}</span>}
-                    <span>{label}</span>
-                  </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => removeBlock(index)}
-                    className="text-white/80 hover:text-white hover:bg-white/10"
+        <div className="overflow-y-auto max-h-[300px]">
+          {blocks.length === 0 ? (
+            <div className="flex items-center justify-center h-48 text-gray-400 text-center">
+              Arraste comandos para programar seu robô
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {blocks.map((blockId, index) => {
+                const { color, label, icon, isEndBlock } = getBlockStyle(blockId);
+                const indent = getIndentation(index);
+                
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    className={`${color} text-white px-3 py-2 rounded-md flex items-center justify-between`}
+                    style={{ marginLeft: `${indent * 20}px` }}
                   >
-                    ✕
-                  </Button>
-                </motion.div>
-              );
-            })}
+                    <div className="flex items-center">
+                      {icon && <span className="mr-2">{icon}</span>}
+                      <span>{label}</span>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => removeBlock(index)}
+                      className="text-white/80 hover:text-white hover:bg-white/10"
+                    >
+                      ✕
+                    </Button>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+        
+        {/* Action buttons moved here from the Robo component */}
+        {onRunCode && onReset && (
+          <div className="mt-6 flex justify-center gap-4">
+            <Button 
+              onClick={onReset}
+              variant="outline" 
+              className="border-red-300 text-red-600 hover:bg-red-50"
+              disabled={isRunning || blocks.length === 0}
+            >
+              <RotateCcwIcon className="mr-2 h-4 w-4" />
+              Limpar Código
+            </Button>
+            <Button 
+              onClick={onRunCode} 
+              className="bg-green-600 hover:bg-green-700 text-white"
+              disabled={isRunning || blocks.length === 0}
+            >
+              <PlayIcon className="mr-2 h-4 w-4" />
+              Executar Missão
+            </Button>
           </div>
         )}
       </div>

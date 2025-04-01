@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { BlockCodeEditor } from "@/components/BlockCodeEditor";
 import { RobotPlayground } from "@/components/RobotPlayground";
 import { LevelSelector } from "@/components/LevelSelector";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlayIcon, RewindIcon } from "lucide-react";
+import { PlayIcon } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { levels } from "@/data/robot-levels";
@@ -22,7 +21,6 @@ const Robo = () => {
   
   const level = levels[currentLevel];
   
-  // Reset state when level changes
   useEffect(() => {
     setCodeBlocks([]);
     setSuccess(null);
@@ -34,36 +32,30 @@ const Robo = () => {
     setIsRunning(true);
     setSuccess(null);
     
-    // Reset to initial state
     setRobotPosition(level.startPosition);
     setCollectedItems([]);
     
-    // Check code after execution completes
     setTimeout(() => {
-      // Get current robot position from the playground component
       const robotElement = document.querySelector('.robot-position') as HTMLElement;
       const finalPosition = robotElement?.dataset ? {
         x: parseInt(robotElement.dataset.x || '0'), 
         y: parseInt(robotElement.dataset.y || '0')
       } : robotPosition;
       
-      // Check if robot reached the goal
       const isAtGoal = level.goalPosition ? 
         finalPosition.x === level.goalPosition.x && finalPosition.y === level.goalPosition.y 
         : false;
       
-      // Check if all required collectibles were collected
       const requiredCollectibleCount = level.grid.flat().filter(cell => cell.type === 'collectible').length;
       const allCollected = collectedItems.length >= requiredCollectibleCount;
       
-      // Check if all required blocks are used
       const requiredBlocksUsed = level.requiredBlocks.every(block => 
         codeBlocks.some(b => b === block)
       );
       
       const isSuccessful = isAtGoal && requiredBlocksUsed;
       
-      if (level.id === 4) { // For collectible level
+      if (level.id === 4) {
         setSuccess(isAtGoal && allCollected);
       } else {
         setSuccess(isSuccessful);
@@ -73,7 +65,6 @@ const Robo = () => {
         toast.success("Missão cumprida! Robô chegou ao objetivo.", {
           duration: 3000,
         });
-        // Play success sound
         const audio = new Audio("/sounds/success.mp3");
         audio.volume = 0.5;
         audio.play().catch(e => console.log("Audio play failed:", e));
@@ -124,7 +115,6 @@ const Robo = () => {
             </p>
           </motion.div>
 
-          {/* "Primeiros Passos" card comes first */}
           <div className="mt-8 mb-8">
             <Card className="p-4 bg-white border-2 border-purple-100 shadow-md">
               <h2 className="text-xl font-bold mb-4 text-purple-700">{level.title}</h2>
@@ -134,7 +124,6 @@ const Robo = () => {
                 <p className="text-sm text-gray-600">{level.objective}</p>
               </div>
               
-              {/* Level selector moved below the objective */}
               <div className="mt-6">
                 <h3 className="font-bold text-purple-800 mb-2">Selecione o Nível</h3>
                 <LevelSelector 
@@ -156,6 +145,9 @@ const Robo = () => {
                 onUpdateBlocks={setCodeBlocks} 
                 blocks={codeBlocks}
                 availableBlocks={level.availableBlocks}
+                onRunCode={handleRunCode}
+                onReset={resetCode}
+                isRunning={isRunning}
               />
             </Card>
 
@@ -170,29 +162,13 @@ const Robo = () => {
                 isRunning={isRunning}
                 success={success}
               />
-              <div className="mt-4 flex justify-center gap-4">
-                <Button 
-                  onClick={resetCode}
-                  variant="outline" 
-                  className="border-red-300 text-red-600 hover:bg-red-50"
-                  disabled={isRunning || codeBlocks.length === 0}
-                >
-                  <RewindIcon className="mr-2 h-4 w-4" />
-                  Limpar Código
-                </Button>
-                <Button 
-                  onClick={handleRunCode} 
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                  disabled={isRunning || codeBlocks.length === 0}
-                >
-                  <PlayIcon className="mr-2 h-4 w-4" />
-                  Executar Missão
-                </Button>
+              <div className="mt-4 flex justify-center">
                 {success && (
                   <Button 
                     onClick={nextLevel} 
                     className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
+                    <PlayIcon className="mr-2 h-4 w-4" />
                     Próxima Missão
                   </Button>
                 )}
