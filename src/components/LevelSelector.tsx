@@ -55,14 +55,6 @@ export const LevelSelector: React.FC<LevelSelectorProps> = ({
             borderStyle = "border border-purple-200";
           }
           
-          // Difficulty indicator styling
-          const difficultyColor = 
-            level.difficulty === 'easy' 
-              ? 'bg-green-500' 
-              : level.difficulty === 'medium' 
-                ? 'bg-yellow-500' 
-                : 'bg-red-500';
-          
           return (
             <motion.div
               key={level.id}
@@ -89,8 +81,7 @@ export const LevelSelector: React.FC<LevelSelectorProps> = ({
               </div>
               
               <div className="mt-2 flex flex-col items-center">
-                <div className={`w-2 h-2 rounded-full ${difficultyColor} ${isLocked ? 'opacity-40' : ''}`} />
-                <div className={`text-xs mt-1 font-medium ${isLocked ? 'text-gray-400' : 'text-gray-700'} max-w-[85px] text-center truncate`}>
+                <div className={`text-xs mt-1 font-medium ${isLocked ? 'text-gray-400' : 'text-gray-700'} max-w-[80px] text-center break-words`}>
                   {isLocked ? "Bloqueado" : level.title}
                 </div>
               </div>
