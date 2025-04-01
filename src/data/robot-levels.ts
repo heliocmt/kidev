@@ -17,6 +17,7 @@ interface Level {
   requiredBlocks: string[];
   optimalSolution: number;
   executionTime: number;
+  goalPosition?: { x: number; y: number };
 }
 
 // Create levels with progressively more complex challenges
@@ -34,7 +35,8 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward'],
     requiredBlocks: ['move-forward'],
     optimalSolution: 3,
-    executionTime: 2000
+    executionTime: 2000,
+    goalPosition: { x: 4, y: 2 }
   },
   
   // Level 2: Turning
@@ -50,7 +52,8 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward', 'turn-right', 'turn-left'],
     requiredBlocks: ['move-forward', 'turn-right'],
     optimalSolution: 5,
-    executionTime: 3000
+    executionTime: 3000,
+    goalPosition: { x: 2, y: 2 }
   },
   
   // Level 3: Loops
@@ -66,7 +69,8 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward', 'turn-right', 'turn-left', 'loop-start-3', 'loop-end'],
     requiredBlocks: ['move-forward', 'loop-start-3'],
     optimalSolution: 4,
-    executionTime: 4000
+    executionTime: 4000,
+    goalPosition: { x: 6, y: 3 }
   },
   
   // Level 4: Collecting Items
@@ -82,7 +86,8 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward', 'turn-right', 'turn-left', 'collect'],
     requiredBlocks: ['move-forward', 'collect'],
     optimalSolution: 8,
-    executionTime: 5000
+    executionTime: 5000,
+    goalPosition: { x: 4, y: 2 }
   },
   
   // Level 5: Conditionals
@@ -98,7 +103,8 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward', 'turn-right', 'turn-left', 'if-path'],
     requiredBlocks: ['if-path', 'move-forward'],
     optimalSolution: 10,
-    executionTime: 6000
+    executionTime: 6000,
+    goalPosition: { x: 5, y: 4 }
   }
 ];
 
