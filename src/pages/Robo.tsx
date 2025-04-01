@@ -131,9 +131,9 @@ const Robo = () => {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="p-4 bg-white border-2 border-blue-100 shadow-md">
-              <h2 className="text-xl font-bold mb-4 text-blue-700 flex items-center">
-                <span className="bg-blue-100 text-blue-700 p-1 rounded mr-2 text-sm">1</span>
+            <Card className="p-4 bg-white border-2 border-purple-100 shadow-md">
+              <h2 className="text-xl font-bold mb-4 text-purple-700 flex items-center">
+                <span className="bg-purple-100 text-purple-700 p-1 rounded mr-2 text-sm">1</span>
                 Comandos Disponíveis
               </h2>
               <BlockCodeEditor 
@@ -143,9 +143,9 @@ const Robo = () => {
               />
             </Card>
 
-            <Card className="p-4 bg-white border-2 border-green-100 shadow-md">
-              <h2 className="text-xl font-bold mb-4 text-green-700 flex items-center">
-                <span className="bg-green-100 text-green-700 p-1 rounded mr-2 text-sm">2</span>
+            <Card className="p-4 bg-white border-2 border-purple-100 shadow-md">
+              <h2 className="text-xl font-bold mb-4 text-purple-700 flex items-center">
+                <span className="bg-purple-100 text-purple-700 p-1 rounded mr-2 text-sm">2</span>
                 Planeta: {level.title}
               </h2>
               <RobotPlayground 
