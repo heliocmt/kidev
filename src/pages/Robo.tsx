@@ -122,13 +122,29 @@ const Robo = () => {
             <p className="text-lg text-gray-700 max-w-3xl mx-auto mb-6">
               Ajude o robô a explorar planetas desconhecidos criando instruções com blocos de código!
             </p>
-            
-            <LevelSelector 
-              levels={levels} 
-              currentLevel={currentLevel} 
-              setCurrentLevel={setCurrentLevel} 
-            />
           </motion.div>
+
+          {/* "Primeiros Passos" card comes first */}
+          <div className="mt-8 mb-8">
+            <Card className="p-4 bg-white border-2 border-purple-100 shadow-md">
+              <h2 className="text-xl font-bold mb-4 text-purple-700">{level.title}</h2>
+              <p className="text-gray-700 mb-4">{level.description}</p>
+              <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                <h3 className="font-bold text-purple-800 mb-2">Objetivo</h3>
+                <p className="text-sm text-gray-600">{level.objective}</p>
+              </div>
+              
+              {/* Level selector moved below the objective */}
+              <div className="mt-6">
+                <h3 className="font-bold text-purple-800 mb-2">Selecione o Nível</h3>
+                <LevelSelector 
+                  levels={levels} 
+                  currentLevel={currentLevel} 
+                  setCurrentLevel={setCurrentLevel} 
+                />
+              </div>
+            </Card>
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="p-4 bg-white border-2 border-purple-100 shadow-md">
@@ -180,17 +196,6 @@ const Robo = () => {
                     Próxima Missão
                   </Button>
                 )}
-              </div>
-            </Card>
-          </div>
-
-          <div className="mt-8">
-            <Card className="p-4 bg-white border-2 border-purple-100 shadow-md">
-              <h2 className="text-xl font-bold mb-4 text-purple-700">{level.title}</h2>
-              <p className="text-gray-700 mb-4">{level.description}</p>
-              <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                <h3 className="font-bold text-purple-800 mb-2">Objetivo</h3>
-                <p className="text-sm text-gray-600">{level.objective}</p>
               </div>
             </Card>
           </div>
