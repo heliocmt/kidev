@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -121,6 +122,7 @@ export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({
 
   return (
     <div className="flex flex-col h-full">
+      {/* Comandos Disponíveis */}
       <div className="mb-4 p-4 bg-gray-50 rounded-lg overflow-hidden">
         <h3 className="font-bold mb-3 text-gray-700">Comandos Disponíveis</h3>
         <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
@@ -139,8 +141,9 @@ export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({
         </div>
       </div>
 
-      <div className="flex-1 border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50 flex flex-col overflow-hidden max-h-[360px]">
-        <div className="flex justify-between mb-4">
+      {/* Sequência de Comandos - Área com altura fixa e overflow controlado */}
+      <div className="flex-1 border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50 flex flex-col overflow-hidden" style={{ maxHeight: '360px', minHeight: '360px' }}>
+        <div className="flex justify-between mb-2">
           <h3 className="font-bold text-gray-700">Sequência de Comandos</h3>
           {blocks.length > 0 && (
             <Button 
@@ -155,7 +158,8 @@ export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({
           )}
         </div>
         
-        <div className="overflow-y-auto min-h-0 flex-1 mb-0 pr-1" style={{ maxHeight: 'calc(100% - 100px)' }}>
+        {/* Área rolável para comandos com altura calculada */}
+        <div className="overflow-y-auto flex-1 mb-1 pr-1" style={{ maxHeight: 'calc(100% - 80px)' }}>
           {blocks.length === 0 ? (
             <div className="flex items-center justify-center h-32 text-gray-400 text-center">
               Arraste comandos para programar seu robô
@@ -194,10 +198,11 @@ export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({
           )}
         </div>
         
+        {/* Botões de ação separados por um divisor */}
         {onRunCode && onReset && (
           <>
-            <Separator className="my-2" />
-            <div className="flex justify-center gap-4 py-2">
+            <Separator className="my-1" />
+            <div className="flex justify-center gap-4 py-2 mt-auto">
               <Button 
                 onClick={onReset}
                 variant="outline" 
