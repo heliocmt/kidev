@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -12,6 +11,7 @@ import {
   Trash2Icon,
   PlayIcon
 } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 interface BlockCodeEditorProps {
   onUpdateBlocks: (blocks: string[]) => void;
@@ -105,7 +105,6 @@ export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({
     };
   };
 
-  // Returns the indentation level for nested blocks
   const getIndentation = (index: number): number => {
     let indentLevel = 0;
     
@@ -140,7 +139,7 @@ export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({
         </div>
       </div>
 
-      <div className="flex-1 border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50 flex flex-col overflow-hidden">
+      <div className="flex-1 border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50 flex flex-col overflow-hidden max-h-[360px]">
         <div className="flex justify-between mb-4">
           <h3 className="font-bold text-gray-700">Sequência de Comandos</h3>
           {blocks.length > 0 && (
@@ -156,9 +155,9 @@ export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({
           )}
         </div>
         
-        <div className="overflow-y-auto min-h-0 flex-1 mb-4">
+        <div className="overflow-y-auto min-h-0 flex-1 mb-0 pr-1" style={{ maxHeight: 'calc(100% - 100px)' }}>
           {blocks.length === 0 ? (
-            <div className="flex items-center justify-center h-48 text-gray-400 text-center">
+            <div className="flex items-center justify-center h-32 text-gray-400 text-center">
               Arraste comandos para programar seu robô
             </div>
           ) : (
@@ -195,27 +194,29 @@ export const BlockCodeEditor: React.FC<BlockCodeEditorProps> = ({
           )}
         </div>
         
-        {/* Action buttons moved here from the Robo component */}
         {onRunCode && onReset && (
-          <div className="flex justify-center gap-4 mt-auto pt-2 border-t border-gray-200">
-            <Button 
-              onClick={onReset}
-              variant="outline" 
-              className="border-red-300 text-red-600 hover:bg-red-50"
-              disabled={isRunning || blocks.length === 0}
-            >
-              <RotateCcwIcon className="mr-2 h-4 w-4" />
-              Limpar Código
-            </Button>
-            <Button 
-              onClick={onRunCode} 
-              className="bg-green-600 hover:bg-green-700 text-white"
-              disabled={isRunning || blocks.length === 0}
-            >
-              <PlayIcon className="mr-2 h-4 w-4" />
-              Executar Missão
-            </Button>
-          </div>
+          <>
+            <Separator className="my-2" />
+            <div className="flex justify-center gap-4 py-2">
+              <Button 
+                onClick={onReset}
+                variant="outline" 
+                className="border-red-300 text-red-600 hover:bg-red-50"
+                disabled={isRunning || blocks.length === 0}
+              >
+                <RotateCcwIcon className="mr-2 h-4 w-4" />
+                Limpar Código
+              </Button>
+              <Button 
+                onClick={onRunCode} 
+                className="bg-green-600 hover:bg-green-700 text-white"
+                disabled={isRunning || blocks.length === 0}
+              >
+                <PlayIcon className="mr-2 h-4 w-4" />
+                Executar Missão
+              </Button>
+            </div>
+          </>
         )}
       </div>
     </div>
