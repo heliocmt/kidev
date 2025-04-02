@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { BlockCodeEditor } from "@/components/BlockCodeEditor";
 import { RobotPlayground } from "@/components/RobotPlayground";
@@ -17,6 +18,7 @@ const Robo = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [success, setSuccess] = useState<boolean | null>(null);
   const [robotPosition, setRobotPosition] = useState(levels[currentLevel].startPosition);
+  const [robotDirection, setRobotDirection] = useState(levels[currentLevel].startDirection);
   const [collectedItems, setCollectedItems] = useState<{x: number, y: number}[]>([]);
   
   const level = levels[currentLevel];
@@ -25,14 +27,16 @@ const Robo = () => {
     setCodeBlocks([]);
     setSuccess(null);
     setRobotPosition(level.startPosition);
+    setRobotDirection(level.startDirection);
     setCollectedItems([]);
-  }, [currentLevel, level.startPosition]);
+  }, [currentLevel, level.startPosition, level.startDirection]);
   
   const handleRunCode = () => {
     setIsRunning(true);
     setSuccess(null);
     
     setRobotPosition(level.startPosition);
+    setRobotDirection(level.startDirection);
     setCollectedItems([]);
     
     setTimeout(() => {

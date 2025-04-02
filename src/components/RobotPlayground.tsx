@@ -205,7 +205,7 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
             const newPos = {...pos};
             const nextPos = {...pos};
             
-            // Move in the direction the robot is facing
+            // Move in the current direction the robot is facing
             switch (robotDirection) {
               case 'up': nextPos.y = Math.max(0, pos.y - 1); break;
               case 'right': nextPos.x = Math.min(level.grid[0].length - 1, pos.x + 1); break;
