@@ -1,4 +1,3 @@
-
 // Define an interface for level structure
 interface Cell {
   type: 'empty' | 'wall' | 'goal' | 'obstacle' | 'collectible';
@@ -18,6 +17,7 @@ interface Level {
   optimalSolution: number;
   executionTime: number;
   goalPosition?: { x: number; y: number };
+  hint?: string; // Added the hint property as optional
 }
 
 // Create levels with progressively more complex challenges
