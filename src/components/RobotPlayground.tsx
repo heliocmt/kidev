@@ -309,6 +309,8 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     
     let currentBlockIndex = 0;
     const loopStack: {startIndex: number, iterations: number, count: number}[] = [];
+    let currentDirection = level.startDirection;
+    let currentPosition = {...level.startPosition};
     
     const executeNextBlock = () => {
       if (currentBlockIndex >= codeBlocks.length) {
@@ -329,6 +331,7 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
       
       const block = codeBlocks[currentBlockIndex];
       console.log(`Executing block: ${block} at index ${currentBlockIndex}`);
+      console.log(`Current position: ${JSON.stringify(currentPosition)}, direction: ${currentDirection}`);
       
       switch (block) {
         case 'move-forward':
@@ -365,19 +368,25 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     };
     
     const moveRobotForward = () => {
-      setRobotPosition(currentPosition => {
-        // Calculate next position based on current direction vector
-        const nextPosition = getNextPosition(currentPosition, robotDirection);
-        console.log("Attempting to move from", currentPosition, "to", nextPosition, "facing", robotDirection);
+      // Calculate next position based on current direction vector
+      const nextPosition = getNextPosition(currentPosition, currentDirection);
+      console.log("Attempting to move from", currentPosition, "to", nextPosition, "facing", currentDirection);
+      
+      // Check if the move is valid within boundaries and not into a wall
+      if (isValidPosition(nextPosition)) {
+        console.log("Move is valid, new position:", nextPosition);
         
-        // Check if the move is valid within boundaries and not into a wall
-        if (isValidPosition(nextPosition)) {
-          console.log("Move is valid, new position:", nextPosition);
-          
-          // Record the move in execution path
-          setExecutionPath(path => [...path, {...nextPosition, direction: robotDirection}]);
-          
-          // Check for collectible
+        // Update currentPosition for subsequent commands
+        currentPosition = {...nextPosition};
+        
+        // Update state for rendering
+        setRobotPosition(nextPosition);
+        
+        // Record the move in execution path
+        setExecutionPath(path => [...path, {...nextPosition, direction: currentDirection}]);
+        
+        // Check for collectible
+        if (level.grid[nextPosition.y] && level.grid[nextPosition.y][nextPosition.x]) {
           const nextCell = level.grid[nextPosition.y][nextPosition.x];
           if (nextCell.type === 'collectible') {
             console.log("Collected item at", nextPosition);
@@ -386,78 +395,81 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
           
           // Check if reached goal
           if ((level.goalPosition && 
-               nextPosition.x === level.goalPosition.x && 
-               nextPosition.y === level.goalPosition.y) ||
+              nextPosition.x === level.goalPosition.x && 
+              nextPosition.y === level.goalPosition.y) ||
               nextCell.type === 'goal') {
             console.log("Reached goal!");
             setReachedGoal(true);
           }
-          
-          return nextPosition;
-        } else {
-          console.log("Move invalid, staying at", currentPosition);
-          return currentPosition;
         }
-      });
+      } else {
+        console.log("Move invalid, staying at", currentPosition);
+      }
     };
     
     const turnRobotLeft = () => {
-      setRobotDirection(currentDirection => {
-        let newDirection: 'up' | 'right' | 'down' | 'left';
-        
-        // Calculate new direction using the directional cycle
-        switch (currentDirection) {
-          case 'up': newDirection = 'left'; break;
-          case 'right': newDirection = 'up'; break;
-          case 'down': newDirection = 'right'; break;
-          case 'left': newDirection = 'down'; break;
-          default: newDirection = currentDirection;
-        }
-        
-        console.log(`Turning left: ${currentDirection} -> ${newDirection}`);
-        
-        // Update execution path with new direction
-        setExecutionPath(path => {
-          const lastStep = path[path.length - 1];
-          return [...path, {...lastStep, direction: newDirection}];
-        });
-        
-        return newDirection;
+      let newDirection: 'up' | 'right' | 'down' | 'left';
+      
+      // Calculate new direction using the directional cycle
+      switch (currentDirection) {
+        case 'up': newDirection = 'left'; break;
+        case 'right': newDirection = 'up'; break;
+        case 'down': newDirection = 'right'; break;
+        case 'left': newDirection = 'down'; break;
+        default: newDirection = currentDirection;
+      }
+      
+      console.log(`Turning left: ${currentDirection} -> ${newDirection}`);
+      
+      // Update currentDirection for subsequent commands
+      currentDirection = newDirection;
+      
+      // Update state for rendering
+      setRobotDirection(newDirection);
+      
+      // Update execution path with new direction
+      setExecutionPath(path => {
+        const lastStep = path[path.length - 1];
+        return [...path, {...lastStep, direction: newDirection}];
       });
     };
     
     const turnRobotRight = () => {
-      setRobotDirection(currentDirection => {
-        let newDirection: 'up' | 'right' | 'down' | 'left';
-        
-        // Calculate new direction using the directional cycle
-        switch (currentDirection) {
-          case 'up': newDirection = 'right'; break;
-          case 'right': newDirection = 'down'; break;
-          case 'down': newDirection = 'left'; break;
-          case 'left': newDirection = 'up'; break;
-          default: newDirection = currentDirection;
-        }
-        
-        console.log(`Turning right: ${currentDirection} -> ${newDirection}`);
-        
-        // Update execution path with new direction
-        setExecutionPath(path => {
-          const lastStep = path[path.length - 1];
-          return [...path, {...lastStep, direction: newDirection}];
-        });
-        
-        return newDirection;
+      let newDirection: 'up' | 'right' | 'down' | 'left';
+      
+      // Calculate new direction using the directional cycle
+      switch (currentDirection) {
+        case 'up': newDirection = 'right'; break;
+        case 'right': newDirection = 'down'; break;
+        case 'down': newDirection = 'left'; break;
+        case 'left': newDirection = 'up'; break;
+        default: newDirection = currentDirection;
+      }
+      
+      console.log(`Turning right: ${currentDirection} -> ${newDirection}`);
+      
+      // Update currentDirection for subsequent commands
+      currentDirection = newDirection;
+      
+      // Update state for rendering
+      setRobotDirection(newDirection);
+      
+      // Update execution path with new direction
+      setExecutionPath(path => {
+        const lastStep = path[path.length - 1];
+        return [...path, {...lastStep, direction: newDirection}];
       });
     };
     
     const collectItem = () => {
-      const currentCell = level.grid[robotPosition.y][robotPosition.x];
-      if (currentCell.type === 'collectible') {
-        console.log("Collecting item at current position:", robotPosition);
-        setCollectedItems(items => [...items, {x: robotPosition.x, y: robotPosition.y}]);
+      const y = currentPosition.y;
+      const x = currentPosition.x;
+      
+      if (level.grid[y] && level.grid[y][x] && level.grid[y][x].type === 'collectible') {
+        console.log("Collecting item at current position:", currentPosition);
+        setCollectedItems(items => [...items, {x, y}]);
       } else {
-        console.log("No collectible found at current position:", robotPosition);
+        console.log("No collectible found at current position:", currentPosition);
       }
     };
     
@@ -478,10 +490,10 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     };
     
     const checkIfPathClear = () => {
-      const nextPosition = getNextPosition(robotPosition, robotDirection);
+      const nextPosition = getNextPosition(currentPosition, currentDirection);
       const pathClear = isValidPosition(nextPosition);
       
-      console.log(`Checking if path clear in direction ${robotDirection}: ${pathClear ? "YES" : "NO"}`);
+      console.log(`Checking if path clear in direction ${currentDirection}: ${pathClear ? "YES" : "NO"}`);
       
       if (!pathClear) {
         currentBlockIndex++;
