@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -21,6 +20,7 @@ interface RobotPlaygroundProps {
   codeBlocks: string[];
   isRunning: boolean;
   success: boolean | null;
+  onExecutionComplete?: (reachedGoal: boolean, collectedItemsCount: number) => void;
 }
 
 // Direction vectors for efficient movement calculations
@@ -43,7 +43,8 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
   level, 
   codeBlocks, 
   isRunning,
-  success 
+  success,
+  onExecutionComplete
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [robotPosition, setRobotPosition] = useState<Position>(level.startPosition);
@@ -291,6 +292,7 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     if (robotPosition.x === level.goalPosition.x && 
         robotPosition.y === level.goalPosition.y) {
       setReachedGoal(true);
+      console.log("Goal reached in check effect!");
     }
   }, [robotPosition, level.goalPosition]);
 
@@ -311,6 +313,8 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     const loopStack: {startIndex: number, iterations: number, count: number}[] = [];
     let currentDirection = level.startDirection;
     let currentPosition = {...level.startPosition};
+    let localCollectedItems: Position[] = [];
+    let isGoalReached = false;
     
     const executeNextBlock = () => {
       if (currentBlockIndex >= codeBlocks.length) {
@@ -323,8 +327,16 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
             setTimeout(executeNextBlock, 500);
           } else {
             loopStack.pop();
-            return;
+            
+            // Check if we're done with all blocks and loops
+            if (loopStack.length === 0) {
+              finishExecution();
+            } else {
+              setTimeout(executeNextBlock, 500);
+            }
           }
+        } else {
+          finishExecution();
         }
         return;
       }
@@ -390,7 +402,9 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
           const nextCell = level.grid[nextPosition.y][nextPosition.x];
           if (nextCell.type === 'collectible') {
             console.log("Collected item at", nextPosition);
-            setCollectedItems(items => [...items, {x: nextPosition.x, y: nextPosition.y}]);
+            const newItem = {x: nextPosition.x, y: nextPosition.y};
+            localCollectedItems.push(newItem);
+            setCollectedItems(items => [...items, newItem]);
           }
           
           // Check if reached goal
@@ -399,6 +413,7 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
               nextPosition.y === level.goalPosition.y) ||
               nextCell.type === 'goal') {
             console.log("Reached goal!");
+            isGoalReached = true;
             setReachedGoal(true);
           }
         }
@@ -467,7 +482,9 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
       
       if (level.grid[y] && level.grid[y][x] && level.grid[y][x].type === 'collectible') {
         console.log("Collecting item at current position:", currentPosition);
-        setCollectedItems(items => [...items, {x, y}]);
+        const newItem = {x, y};
+        localCollectedItems.push(newItem);
+        setCollectedItems(items => [...items, newItem]);
       } else {
         console.log("No collectible found at current position:", currentPosition);
       }
@@ -500,9 +517,44 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
       }
     };
     
+    const finishExecution = () => {
+      console.log("Execution finished:");
+      console.log("- Final position:", currentPosition);
+      console.log("- Goal reached:", isGoalReached);
+      console.log("- Items collected:", localCollectedItems.length);
+      
+      // Ensure goal status is checked one last time
+      if (level.goalPosition && 
+          currentPosition.x === level.goalPosition.x && 
+          currentPosition.y === level.goalPosition.y) {
+        isGoalReached = true;
+        setReachedGoal(true);
+      }
+      
+      // Check if cell type is goal
+      if (level.grid[currentPosition.y] && 
+          level.grid[currentPosition.y][currentPosition.x] && 
+          level.grid[currentPosition.y][currentPosition.x].type === 'goal') {
+        isGoalReached = true;
+        setReachedGoal(true);
+      }
+      
+      // Notify parent component about execution completion
+      if (onExecutionComplete) {
+        setTimeout(() => {
+          onExecutionComplete(isGoalReached, localCollectedItems.length);
+        }, 500);
+      }
+    };
+    
     // Start execution
     setTimeout(executeNextBlock, 500);
-  }, [isRunning, codeBlocks, level]);
+    
+    // Cleanup function
+    return () => {
+      // Any cleanup needed
+    };
+  }, [isRunning, codeBlocks, level, onExecutionComplete]);
 
   return (
     <div className="h-full flex flex-col">

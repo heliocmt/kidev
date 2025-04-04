@@ -1,3 +1,4 @@
+
 // Define an interface for level structure
 interface Cell {
   type: 'empty' | 'wall' | 'goal' | 'obstacle' | 'collectible';
@@ -35,7 +36,7 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward'],
     requiredBlocks: ['move-forward'],
     optimalSolution: 3,
-    executionTime: 2000,
+    executionTime: 5000, // Aumentado para 5 segundos
     goalPosition: { x: 4, y: 2 }
   },
   
@@ -52,7 +53,7 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward', 'turn-right', 'turn-left'],
     requiredBlocks: ['move-forward', 'turn-right'],
     optimalSolution: 5,
-    executionTime: 3000,
+    executionTime: 6000, // Aumentado para 6 segundos
     goalPosition: { x: 2, y: 2 }
   },
   
@@ -69,7 +70,7 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward', 'turn-right', 'turn-left', 'loop-start-3', 'loop-end'],
     requiredBlocks: ['move-forward', 'loop-start-3'],
     optimalSolution: 4,
-    executionTime: 4000,
+    executionTime: 8000, // Aumentado para 8 segundos
     goalPosition: { x: 6, y: 3 }
   },
   
@@ -86,7 +87,7 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward', 'turn-right', 'turn-left', 'collect'],
     requiredBlocks: ['move-forward', 'collect'],
     optimalSolution: 8,
-    executionTime: 5000,
+    executionTime: 10000, // Aumentado para 10 segundos
     goalPosition: { x: 4, y: 2 }
   },
   
@@ -103,7 +104,7 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward', 'turn-right', 'turn-left', 'if-path'],
     requiredBlocks: ['if-path', 'move-forward'],
     optimalSolution: 10,
-    executionTime: 6000,
+    executionTime: 15000, // Aumentado para 15 segundos
     goalPosition: { x: 5, y: 4 }
   }
 ];

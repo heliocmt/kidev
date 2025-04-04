@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { BlockCodeEditor } from "@/components/BlockCodeEditor";
 import { RobotPlayground } from "@/components/RobotPlayground";
@@ -21,6 +20,7 @@ const Robo = () => {
   const [robotDirection, setRobotDirection] = useState(levels[currentLevel].startDirection);
   const [collectedItems, setCollectedItems] = useState<{x: number, y: number}[]>([]);
   const [showHint, setShowHint] = useState(false);
+  const [executionComplete, setExecutionComplete] = useState(false);
   
   const level = levels[currentLevel];
   
@@ -31,69 +31,66 @@ const Robo = () => {
     setRobotDirection(level.startDirection);
     setCollectedItems([]);
     setShowHint(false);
+    setExecutionComplete(false);
   }, [currentLevel, level.startPosition, level.startDirection]);
   
+  // Listen for execution completion events from RobotPlayground
+  const handleExecutionComplete = (reachedGoal: boolean, collectedCount: number) => {
+    setExecutionComplete(true);
+    
+    // Determine success based on level requirements
+    let isSuccessful = false;
+    
+    const requiredBlocksUsed = level.requiredBlocks.every(block => 
+      codeBlocks.some(b => b === block)
+    );
+    
+    if (level.id === 4) {
+      const requiredCollectibleCount = level.grid.flat().filter(cell => cell.type === 'collectible').length;
+      isSuccessful = reachedGoal && collectedCount >= requiredCollectibleCount;
+    } else if (level.id === 1 || level.id === 2 || level.id === 3 || level.id === 5) {
+      isSuccessful = reachedGoal && requiredBlocksUsed;
+    }
+    
+    setSuccess(isSuccessful);
+    
+    if (isSuccessful) {
+      toast.success("Missão cumprida! Robô chegou ao objetivo.", {
+        duration: 3000,
+      });
+      const audio = new Audio("/sounds/success.mp3");
+      audio.volume = 0.5;
+      audio.play().catch(e => console.log("Audio play failed:", e));
+    } else {
+      toast.error("Ops! O robô não alcançou o objetivo.", {
+        duration: 3000,
+      });
+      const audio = new Audio("/sounds/error.mp3");
+      audio.volume = 0.5;
+      audio.play().catch(e => console.log("Audio play failed:", e));
+    }
+    
+    setIsRunning(false);
+  };
+
   const handleRunCode = () => {
     setIsRunning(true);
     setSuccess(null);
     setShowHint(false);
+    setExecutionComplete(false);
     
     setRobotPosition(level.startPosition);
     setRobotDirection(level.startDirection);
     setCollectedItems([]);
     
-    setTimeout(() => {
-      const robotElement = document.querySelector('.robot-position') as HTMLElement;
-      const finalPosition = robotElement?.dataset ? {
-        x: parseInt(robotElement.dataset.x || '0'), 
-        y: parseInt(robotElement.dataset.y || '0')
-      } : robotPosition;
-      
-      const isAtGoal = level.goalPosition ? 
-        finalPosition.x === level.goalPosition.x && finalPosition.y === level.goalPosition.y 
-        : false;
-      
-      const requiredCollectibleCount = level.grid.flat().filter(cell => cell.type === 'collectible').length;
-      const allCollected = collectedItems.length >= requiredCollectibleCount;
-      
-      const requiredBlocksUsed = level.requiredBlocks.every(block => 
-        codeBlocks.some(b => b === block)
-      );
-      
-      let isSuccessful = false;
-      
-      if (level.id === 4) {
-        isSuccessful = isAtGoal && allCollected;
-      } else if (level.id === 1 || level.id === 2 || level.id === 3 || level.id === 5) {
-        isSuccessful = isAtGoal && requiredBlocksUsed;
-      }
-      
-      setSuccess(isSuccessful);
-      
-      if (isSuccessful) {
-        toast.success("Missão cumprida! Robô chegou ao objetivo.", {
-          duration: 3000,
-        });
-        const audio = new Audio("/sounds/success.mp3");
-        audio.volume = 0.5;
-        audio.play().catch(e => console.log("Audio play failed:", e));
-      } else {
-        toast.error("Ops! O robô não alcançou o objetivo.", {
-          duration: 3000,
-        });
-        const audio = new Audio("/sounds/error.mp3");
-        audio.volume = 0.5;
-        audio.play().catch(e => console.log("Audio play failed:", e));
-      }
-      
-      setIsRunning(false);
-    }, level.executionTime || 3000);
+    // O RobotPlayground irá chamar handleExecutionComplete quando terminar
   };
 
   const resetCode = () => {
     setCodeBlocks([]);
     setSuccess(null);
     setShowHint(false);
+    setExecutionComplete(false);
   };
 
   const nextLevel = () => {
@@ -219,6 +216,7 @@ const Robo = () => {
                   codeBlocks={codeBlocks} 
                   isRunning={isRunning}
                   success={success}
+                  onExecutionComplete={handleExecutionComplete}
                 />
                 <div className="mt-4 flex justify-center">
                   {success && (
