@@ -36,8 +36,9 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward'],
     requiredBlocks: ['move-forward'],
     optimalSolution: 3,
-    executionTime: 5000, // Aumentado para 5 segundos
-    goalPosition: { x: 4, y: 2 }
+    executionTime: 10000, // Aumentado para 10 segundos
+    goalPosition: { x: 4, y: 2 },
+    hint: "Use o bloco 'Andar' para mover o robô para frente. Você precisará de 3 blocos para alcançar a meta."
   },
   
   // Level 2: Turning
@@ -53,8 +54,9 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward', 'turn-right', 'turn-left'],
     requiredBlocks: ['move-forward', 'turn-right'],
     optimalSolution: 5,
-    executionTime: 6000, // Aumentado para 6 segundos
-    goalPosition: { x: 2, y: 2 }
+    executionTime: 12000, // Aumentado para 12 segundos
+    goalPosition: { x: 2, y: 2 },
+    hint: "Você precisará virar para navegar pelo caminho. Use 'Virar à direita' e 'Andar' para alcançar a meta."
   },
   
   // Level 3: Loops
@@ -70,8 +72,9 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward', 'turn-right', 'turn-left', 'loop-start-3', 'loop-end'],
     requiredBlocks: ['move-forward', 'loop-start-3'],
     optimalSolution: 4,
-    executionTime: 8000, // Aumentado para 8 segundos
-    goalPosition: { x: 6, y: 3 }
+    executionTime: 15000, // Aumentado para 15 segundos
+    goalPosition: { x: 6, y: 3 },
+    hint: "Use o bloco 'Repetir 3 vezes' com o comando 'Andar' dentro dele para mover o robô de forma eficiente."
   },
   
   // Level 4: Collecting Items
@@ -87,8 +90,9 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward', 'turn-right', 'turn-left', 'collect'],
     requiredBlocks: ['move-forward', 'collect'],
     optimalSolution: 8,
-    executionTime: 10000, // Aumentado para 10 segundos
-    goalPosition: { x: 4, y: 2 }
+    executionTime: 20000, // Aumentado para 20 segundos
+    goalPosition: { x: 4, y: 2 },
+    hint: "Planeje seu caminho para passar por todos os cristais. Use o comando 'Coletar' quando estiver na mesma posição do cristal."
   },
   
   // Level 5: Conditionals
@@ -104,8 +108,9 @@ export const levels: Level[] = [
     availableBlocks: ['move-forward', 'turn-right', 'turn-left', 'if-path'],
     requiredBlocks: ['if-path', 'move-forward'],
     optimalSolution: 10,
-    executionTime: 15000, // Aumentado para 15 segundos
-    goalPosition: { x: 5, y: 4 }
+    executionTime: 30000, // Aumentado para 30 segundos
+    goalPosition: { x: 5, y: 4 },
+    hint: "Use 'Se Caminho Livre' para verificar se há obstáculos e tomar decisões sobre quando virar ou seguir em frente."
   }
 ];
 

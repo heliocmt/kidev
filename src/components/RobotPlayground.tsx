@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -520,30 +521,37 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     const finishExecution = () => {
       console.log("Execution finished:");
       console.log("- Final position:", currentPosition);
-      console.log("- Goal reached:", isGoalReached);
-      console.log("- Items collected:", localCollectedItems.length);
       
-      // Ensure goal status is checked one last time
+      // Verificação de sucesso melhorada - verifica tanto a posição quanto o tipo da célula
+      let isGoalReached = false;
+      
+      // Verificar se chegou à posição explícita da meta (goalPosition)
       if (level.goalPosition && 
           currentPosition.x === level.goalPosition.x && 
           currentPosition.y === level.goalPosition.y) {
+        console.log("Goal reached by position match!");
         isGoalReached = true;
-        setReachedGoal(true);
       }
       
-      // Check if cell type is goal
+      // Verificar se a célula atual é do tipo 'goal'
       if (level.grid[currentPosition.y] && 
           level.grid[currentPosition.y][currentPosition.x] && 
           level.grid[currentPosition.y][currentPosition.x].type === 'goal') {
+        console.log("Goal reached by cell type!");
         isGoalReached = true;
-        setReachedGoal(true);
       }
       
-      // Notify parent component about execution completion
+      console.log("- Goal reached:", isGoalReached);
+      console.log("- Items collected:", localCollectedItems.length);
+      
+      // Atualizar estado React para refletir o sucesso
+      setReachedGoal(isGoalReached);
+      
+      // Notificar componente pai sobre a conclusão da execução
       if (onExecutionComplete) {
         setTimeout(() => {
           onExecutionComplete(isGoalReached, localCollectedItems.length);
-        }, 500);
+        }, 1000); // Atraso para garantir que a animação seja concluída
       }
     };
     
