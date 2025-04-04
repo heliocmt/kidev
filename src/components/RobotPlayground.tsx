@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -17,19 +16,6 @@ interface RobotPlaygroundProps {
   isRunning: boolean;
   success: boolean | null;
 }
-
-// Direction vectors for each possible direction
-interface DirectionVector {
-  x: number;
-  y: number;
-}
-
-const DIRECTION_VECTORS: Record<string, DirectionVector> = {
-  'up': { x: 0, y: -1 },    // Up decreases Y
-  'right': { x: 1, y: 0 },  // Right increases X
-  'down': { x: 0, y: 1 },   // Down increases Y
-  'left': { x: -1, y: 0 }   // Left decreases X
-};
 
 export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({ 
   level, 
@@ -179,134 +165,6 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     }
   }, [robotPosition, level.goalPosition]);
 
-  // Get next position based on current position and direction vector
-  const getNextPosition = (currentPosition: { x: number, y: number }, direction: 'up' | 'right' | 'down' | 'left') => {
-    // Get the direction vector for the current direction
-    const dirVector = DIRECTION_VECTORS[direction];
-    
-    // Calculate next position by adding direction vector to current position
-    const nextPos = { 
-      x: currentPosition.x + dirVector.x,
-      y: currentPosition.y + dirVector.y
-    };
-    
-    console.log(`Movendo de (${currentPosition.x},${currentPosition.y}) para (${nextPos.x},${nextPos.y}) na direção ${direction}`);
-    console.log(`Vetor de direção: (${dirVector.x}, ${dirVector.y})`);
-    
-    return nextPos;
-  };
-
-  // Helper function to check if a move is valid
-  const isValidMove = (position: { x: number, y: number }) => {
-    // Check if the position is within grid boundaries
-    if (position.y < 0 || position.y >= level.grid.length ||
-        position.x < 0 || position.x >= level.grid[0].length) {
-      console.log(`Posição inválida: fora dos limites (${position.x},${position.y})`);
-      return false;
-    }
-    
-    // Check if the cell is not a wall
-    const cell = level.grid[position.y][position.x];
-    const isWall = cell.type === 'wall';
-    
-    if (isWall) {
-      console.log(`Posição inválida: parede em (${position.x},${position.y})`);
-    }
-    
-    return !isWall;
-  };
-
-  // Helper function to turn the robot left
-  const turnRobotLeft = () => {
-    console.log(`turnRobotLeft - Virando da direção ${robotDirection}`);
-    
-    // Calculate new direction after turning left
-    const directionOrder = ['up', 'left', 'down', 'right'];
-    const currentIndex = directionOrder.indexOf(robotDirection);
-    const newDirection = directionOrder[(currentIndex + 1) % 4] as 'up' | 'right' | 'down' | 'left';
-    
-    console.log(`Virou à esquerda: ${robotDirection} -> ${newDirection}`);
-    
-    // Update the execution path with the new direction
-    setExecutionPath(path => {
-      const lastPos = path[path.length - 1];
-      return [...path, { x: lastPos.x, y: lastPos.y, direction: newDirection }];
-    });
-    
-    // Update robot direction
-    setRobotDirection(newDirection);
-  };
-
-  // Helper function to turn the robot right
-  const turnRobotRight = () => {
-    console.log(`turnRobotRight - Virando da direção ${robotDirection}`);
-    
-    // Calculate new direction after turning right
-    const directionOrder = ['up', 'right', 'down', 'left'];
-    const currentIndex = directionOrder.indexOf(robotDirection);
-    const newDirection = directionOrder[(currentIndex + 1) % 4] as 'up' | 'right' | 'down' | 'left';
-    
-    console.log(`Virou à direita: ${robotDirection} -> ${newDirection}`);
-    
-    // Update the execution path with the new direction
-    setExecutionPath(path => {
-      const lastPos = path[path.length - 1];
-      return [...path, { x: lastPos.x, y: lastPos.y, direction: newDirection }];
-    });
-    
-    // Update robot direction
-    setRobotDirection(newDirection);
-  };
-
-  // Helper function to move the robot forward based on its current direction
-  const moveRobotForward = () => {
-    console.log(`moveRobotForward - Posição atual: (${robotPosition.x}, ${robotPosition.y}), Direção: ${robotDirection}`);
-    
-    // Calculate next position based on direction
-    const nextPos = getNextPosition(robotPosition, robotDirection);
-    
-    // Move only if the next position is valid
-    if (isValidMove(nextPos)) {
-      console.log(`Posição válida! Movendo para: (${nextPos.x}, ${nextPos.y})`);
-      
-      // Update execution path
-      setExecutionPath(path => [...path, {...nextPos, direction: robotDirection}]);
-      
-      // Check for collectible items
-      if (nextPos.y >= 0 && nextPos.y < level.grid.length && 
-          nextPos.x >= 0 && nextPos.x < level.grid[0].length) {
-        const nextCell = level.grid[nextPos.y][nextPos.x];
-        if (nextCell.type === 'collectible') {
-          setCollectedItems(items => [...items, {x: nextPos.x, y: nextPos.y}]);
-        }
-        
-        // Check if reached goal
-        if (nextCell.type === 'goal' || 
-            (level.goalPosition && 
-            nextPos.x === level.goalPosition.x && 
-            nextPos.y === level.goalPosition.y)) {
-          setReachedGoal(true);
-        }
-      }
-      
-      // Update robot position
-      setRobotPosition(nextPos);
-    } else {
-      console.log(`Movimento inválido! Permanecendo em: (${robotPosition.x}, ${robotPosition.y})`);
-    }
-  };
-
-  // Helper function to collect items
-  const collectItem = () => {
-    const currentCell = level.grid[robotPosition.y]?.[robotPosition.x];
-    if (currentCell && currentCell.type === 'collectible') {
-      setCollectedItems(items => [...items, {x: robotPosition.x, y: robotPosition.y}]);
-      console.log(`Item coletado em (${robotPosition.x}, ${robotPosition.y})`);
-    } else {
-      console.log(`Nenhum item para coletar em (${robotPosition.x}, ${robotPosition.y})`);
-    }
-  };
-
   // Execute code blocks when running
   useEffect(() => {
     if (!isRunning || codeBlocks.length === 0) return;
@@ -317,8 +175,6 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     setCollectedItems([]);
     setExecutionPath([{...level.startPosition, direction: level.startDirection}]);
     setReachedGoal(false);
-    
-    console.log("Iniciando execução com posição:", level.startPosition, "direção:", level.startDirection);
     
     let currentBlockIndex = 0;
     const loopStack: {startIndex: number, iterations: number, count: number}[] = [];
@@ -341,7 +197,6 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
       }
       
       const block = codeBlocks[currentBlockIndex];
-      console.log(`Executando bloco: ${block} (índice ${currentBlockIndex})`);
       
       switch (block) {
         case 'move-forward':
@@ -378,40 +233,118 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
       setTimeout(executeNextBlock, 500);
     };
     
+    const moveRobotForward = () => {
+      setRobotPosition(pos => {
+        const newPos = {...pos};
+        const nextPos = {...pos};
+        
+        // Move in the current direction the robot is facing
+        switch (robotDirection) {
+          case 'up': nextPos.y = Math.max(0, pos.y - 1); break;
+          case 'right': nextPos.x = Math.min(level.grid[0].length - 1, pos.x + 1); break;
+          case 'down': nextPos.y = Math.min(level.grid.length - 1, pos.y + 1); break;
+          case 'left': nextPos.x = Math.max(0, pos.x - 1); break;
+        }
+        
+        if (level.grid[nextPos.y] && level.grid[nextPos.y][nextPos.x]) {
+          const nextCell = level.grid[nextPos.y][nextPos.x];
+          if (nextCell.type !== 'wall') {
+            newPos.x = nextPos.x;
+            newPos.y = nextPos.y;
+            
+            setExecutionPath(path => [...path, {...newPos, direction: robotDirection}]);
+            
+            if (nextCell.type === 'collectible') {
+              setCollectedItems(items => [...items, {x: nextPos.x, y: nextPos.y}]);
+            }
+            
+            // Check if reached goal
+            if (nextCell.type === 'goal' || 
+                (level.goalPosition && 
+                 nextPos.x === level.goalPosition.x && 
+                 nextPos.y === level.goalPosition.y)) {
+              setReachedGoal(true);
+            }
+          }
+        }
+        
+        return newPos;
+      });
+    };
+    
+    const turnRobotLeft = () => {
+      setRobotDirection(dir => {
+        const directions = ['up', 'right', 'down', 'left'] as const;
+        const currentIdx = directions.indexOf(dir);
+        const newIdx = (currentIdx - 1 + 4) % 4; // Add 4 to ensure positive result
+        const newDir = directions[newIdx];
+        
+        setExecutionPath(path => {
+          const lastStep = path[path.length - 1];
+          return [...path, {...lastStep, direction: newDir}];
+        });
+        
+        return newDir;
+      });
+    };
+    
+    const turnRobotRight = () => {
+      setRobotDirection(dir => {
+        const directions = ['up', 'right', 'down', 'left'] as const;
+        const currentIdx = directions.indexOf(dir);
+        const newIdx = (currentIdx + 1) % 4;
+        const newDir = directions[newIdx];
+        
+        setExecutionPath(path => {
+          const lastStep = path[path.length - 1];
+          return [...path, {...lastStep, direction: newDir}];
+        });
+        
+        return newDir;
+      });
+    };
+    
+    const collectItem = () => {
+      const currentCell = level.grid[robotPosition.y][robotPosition.x];
+      if (currentCell.type === 'collectible') {
+        setCollectedItems(items => [...items, {x: robotPosition.x, y: robotPosition.y}]);
+      }
+    };
+    
     const handleLoopEnd = () => {
       if (loopStack.length > 0) {
         const currentLoop = loopStack[loopStack.length - 1];
         currentLoop.count++;
-        console.log(`Loop: iteração ${currentLoop.count} de ${currentLoop.iterations}`);
         
         if (currentLoop.count < currentLoop.iterations) {
           currentBlockIndex = currentLoop.startIndex - 1;
         } else {
           loopStack.pop();
-          console.log("Loop finalizado");
         }
       }
     };
     
     const checkIfPathClear = () => {
-      const nextPos = getNextPosition(robotPosition, robotDirection);
-      const pathClear = isValidMove(nextPos);
-      console.log(`Verificando caminho: ${pathClear ? "livre" : "bloqueado"}`);
+      let pathClear = false;
+      const nextPos = {...robotPosition};
+      
+      switch (robotDirection) {
+        case 'up': nextPos.y = Math.max(0, robotPosition.y - 1); break;
+        case 'right': nextPos.x = Math.min(level.grid[0].length - 1, robotPosition.x + 1); break;
+        case 'down': nextPos.y = Math.min(level.grid.length - 1, robotPosition.y + 1); break;
+        case 'left': nextPos.x = Math.max(0, robotPosition.x - 1); break;
+      }
+      
+      if (level.grid[nextPos.y] && level.grid[nextPos.y][nextPos.x]) {
+        pathClear = level.grid[nextPos.y][nextPos.x].type !== 'wall';
+      }
       
       if (!pathClear) {
         currentBlockIndex++;
       }
     };
     
-    // Start executing blocks
-    console.log("Iniciando execução de blocos:", codeBlocks);
     setTimeout(executeNextBlock, 500);
-    
-    // Cleanup function
-    return () => {
-      // If necessary, add cleanup code here
-    };
-    
   }, [isRunning, codeBlocks, level]);
 
   return (
