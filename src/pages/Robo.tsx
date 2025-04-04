@@ -39,7 +39,7 @@ const Robo = () => {
     setRobotDirection(level.startDirection);
     setCollectedItems([]);
     
-    // Adicionando log para depuração
+    // Log para depuração
     console.log("Iniciar execução. Level:", level.title);
     console.log("Posição inicial:", level.startPosition);
     console.log("Direção inicial:", level.startDirection);
