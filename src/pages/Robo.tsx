@@ -39,12 +39,21 @@ const Robo = () => {
     setRobotDirection(level.startDirection);
     setCollectedItems([]);
     
+    // Adicionando log para depuração
+    console.log("Iniciar execução. Level:", level.title);
+    console.log("Posição inicial:", level.startPosition);
+    console.log("Direção inicial:", level.startDirection);
+    console.log("Blocos de código:", codeBlocks);
+    
     setTimeout(() => {
       const robotElement = document.querySelector('.robot-position') as HTMLElement;
       const finalPosition = robotElement?.dataset ? {
         x: parseInt(robotElement.dataset.x || '0'), 
         y: parseInt(robotElement.dataset.y || '0')
       } : robotPosition;
+      
+      // Log da posição final para depuração
+      console.log("Posição final:", finalPosition);
       
       const isAtGoal = level.goalPosition ? 
         finalPosition.x === level.goalPosition.x && finalPosition.y === level.goalPosition.y 
@@ -64,6 +73,13 @@ const Robo = () => {
       } else if (level.id === 1 || level.id === 2 || level.id === 3 || level.id === 5) {
         isSuccessful = isAtGoal && requiredBlocksUsed;
       }
+      
+      console.log("Resultado:", { 
+        isAtGoal, 
+        allCollected, 
+        requiredBlocksUsed, 
+        isSuccessful 
+      });
       
       setSuccess(isSuccessful);
       

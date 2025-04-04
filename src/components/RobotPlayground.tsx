@@ -172,16 +172,16 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     
     switch (direction) {
       case 'up':
-        nextPos.y = Math.max(0, currentPosition.y - 1);
+        nextPos.y = Math.max(0, nextPos.y - 1);
         break;
       case 'right':
-        nextPos.x = Math.min(level.grid[0].length - 1, currentPosition.x + 1);
+        nextPos.x = Math.min(level.grid[0].length - 1, nextPos.x + 1);
         break;
       case 'down':
-        nextPos.y = Math.min(level.grid.length - 1, currentPosition.y + 1);
+        nextPos.y = Math.min(level.grid.length - 1, nextPos.y + 1);
         break;
       case 'left':
-        nextPos.x = Math.max(0, currentPosition.x - 1);
+        nextPos.x = Math.max(0, nextPos.x - 1);
         break;
     }
     
@@ -190,7 +190,8 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
 
   // Helper function to check if a move is valid
   const isValidMove = (nextPosition: { x: number, y: number }) => {
-    if (!level.grid[nextPosition.y] || !level.grid[nextPosition.y][nextPosition.x]) {
+    if (nextPosition.y < 0 || nextPosition.y >= level.grid.length ||
+        nextPosition.x < 0 || nextPosition.x >= level.grid[0].length) {
       return false;
     }
     
@@ -271,23 +272,29 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
         // Calculate the next position based on current direction
         const nextPos = getNextPosition(currentPosition, robotDirection);
         
+        // Log para debug
+        console.log(`Direção: ${robotDirection}, Posição atual: (${currentPosition.x}, ${currentPosition.y}), Próxima posição: (${nextPos.x}, ${nextPos.y})`);
+        
         // Only move if the next position is valid
         if (isValidMove(nextPos)) {
           // Update the execution path
           setExecutionPath(path => [...path, {...nextPos, direction: robotDirection}]);
           
           // Check if we collected an item
-          const nextCell = level.grid[nextPos.y][nextPos.x];
-          if (nextCell.type === 'collectible') {
-            setCollectedItems(items => [...items, {x: nextPos.x, y: nextPos.y}]);
-          }
-          
-          // Check if reached goal
-          if (nextCell.type === 'goal' || 
-              (level.goalPosition && 
-               nextPos.x === level.goalPosition.x && 
-               nextPos.y === level.goalPosition.y)) {
-            setReachedGoal(true);
+          if (nextPos.y >= 0 && nextPos.y < level.grid.length && 
+              nextPos.x >= 0 && nextPos.x < level.grid[0].length) {
+            const nextCell = level.grid[nextPos.y][nextPos.x];
+            if (nextCell.type === 'collectible') {
+              setCollectedItems(items => [...items, {x: nextPos.x, y: nextPos.y}]);
+            }
+            
+            // Check if reached goal
+            if (nextCell.type === 'goal' || 
+                (level.goalPosition && 
+                nextPos.x === level.goalPosition.x && 
+                nextPos.y === level.goalPosition.y)) {
+              setReachedGoal(true);
+            }
           }
           
           return nextPos;
@@ -318,11 +325,12 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
             newDirection = currentDirection;
         }
         
+        console.log(`Virando à esquerda: ${currentDirection} -> ${newDirection}`);
+        
         // Update the execution path with the new direction
         setExecutionPath(path => {
           const lastPos = path[path.length - 1];
-          const newPos = { x: lastPos.x, y: lastPos.y, direction: newDirection };
-          return [...path, newPos];
+          return [...path, { x: lastPos.x, y: lastPos.y, direction: newDirection }];
         });
         
         return newDirection;
@@ -350,11 +358,12 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
             newDirection = currentDirection;
         }
         
+        console.log(`Virando à direita: ${currentDirection} -> ${newDirection}`);
+        
         // Update the execution path with the new direction
         setExecutionPath(path => {
           const lastPos = path[path.length - 1];
-          const newPos = { x: lastPos.x, y: lastPos.y, direction: newDirection };
-          return [...path, newPos];
+          return [...path, { x: lastPos.x, y: lastPos.y, direction: newDirection }];
         });
         
         return newDirection;
@@ -362,8 +371,8 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
     };
     
     const collectItem = () => {
-      const currentCell = level.grid[robotPosition.y][robotPosition.x];
-      if (currentCell.type === 'collectible') {
+      const currentCell = level.grid[robotPosition.y]?.[robotPosition.x];
+      if (currentCell && currentCell.type === 'collectible') {
         setCollectedItems(items => [...items, {x: robotPosition.x, y: robotPosition.y}]);
       }
     };
@@ -390,7 +399,14 @@ export const RobotPlayground: React.FC<RobotPlaygroundProps> = ({
       }
     };
     
+    // Inicia a execução dos blocos
     setTimeout(executeNextBlock, 500);
+    
+    // Cleanup function
+    return () => {
+      // Se necessário, adicionar cleanup code aqui
+    };
+    
   }, [isRunning, codeBlocks, level, robotDirection]);
 
   return (
