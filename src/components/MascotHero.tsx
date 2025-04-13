@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 export const MascotHero = () => {
   const navigate = useNavigate();
@@ -105,7 +106,7 @@ export const MascotHero = () => {
               <Button
                 size="lg"
                 variant="outline"
-                onClick={() => handleNavigation("/dashboard")}
+                onClick={() => navigate("/dashboard")}
                 disabled={isLoading}
                 className="border-white hover:bg-white/20 text-lg px-8 py-6 text-violet-600"
               >
@@ -115,7 +116,7 @@ export const MascotHero = () => {
               <Button
                 size="lg"
                 variant="outline"
-                onClick={() => handleNavigation("/game")}
+                onClick={() => navigate("/game")}
                 className="border-white hover:bg-white/20 text-lg px-8 py-6 text-white"
                 disabled={isLoading}
               >
@@ -133,7 +134,7 @@ export const MascotHero = () => {
             <Button
               size="lg"
               variant="outline"
-              onClick={() => handleNavigation("/blockcoding")}
+              onClick={() => navigate("/blockcoding")}
               disabled={isLoading}
               className="border-white hover:bg-white/20 text-lg px-8 py-6 text-violet-600"
             >

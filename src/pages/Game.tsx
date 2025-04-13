@@ -5,9 +5,10 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { PlayIcon, RefreshCw, CheckCircle } from 'lucide-react';
+import { PlayIcon, RefreshCw } from 'lucide-react';
 import { CodeBlock } from '@/components/CodeBlock';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 
 const Game = () => {
   const [progress, setProgress] = useState(0);
@@ -76,6 +77,12 @@ const Game = () => {
           <Button onClick={resetGame} variant="outline" className="w-32">
             <RefreshCw className="mr-2 h-4 w-4" />
             Reiniciar
+          </Button>
+        </div>
+
+        <div className="mt-8 flex justify-center gap-4">
+          <Button variant="outline" asChild>
+            <Link to="/">Voltar à Página Inicial</Link>
           </Button>
         </div>
       </motion.div>
