@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { 
@@ -182,7 +183,7 @@ export const Header = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem className="flex items-center gap-2">
+                <DropdownMenuItem className="flex items-center gap-2" onClick={() => navigate('/dashboard')}>
                   <UserCircle className="h-4 w-4" />
                   <span>Meu Perfil</span>
                 </DropdownMenuItem>
@@ -230,12 +231,20 @@ export const Header = () => {
               <BookOpen className="h-5 w-5" />
               <span>Python Quest</span>
             </Link>
+            <Link to="/jscodepets" className="flex items-center gap-2 py-2 px-3 rounded-md hover:bg-gray-100" onClick={() => setIsMenuOpen(false)}>
+              <BookOpen className="h-5 w-5" />
+              <span>JS Code Pets</span>
+            </Link>
+            <Link to="/robo" className="flex items-center gap-2 py-2 px-3 rounded-md hover:bg-gray-100" onClick={() => setIsMenuOpen(false)}>
+              <BookOpen className="h-5 w-5" />
+              <span>Robô</span>
+            </Link>
           </nav>
           <div className="mt-4 flex gap-2">
             {!user ? (
               <>
                 <Button variant="outline" className="flex-1" onClick={handleLogin}>Entrar</Button>
-                <Button className="flex-1" onClick={handleLogin}>Registrar</Button>
+                <Button className="flex-1" onClick={() => navigate('/auth')}>Registrar</Button>
               </>
             ) : (
               <Button variant="outline" className="flex-1" onClick={handleLogout}>
