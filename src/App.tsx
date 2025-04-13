@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import Game from "./pages/Game";
 import CodePets from "./pages/CodePets";
@@ -28,17 +29,54 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            {/* Public routes */}
             <Route path="/" element={<Index />} />
-            <Route path="/game" element={<Game />} />
-            <Route path="/codepets" element={<CodePets />} />
-            <Route path="/jscodepets" element={<JsCodePets />} />
-            <Route path="/blockcoding" element={<BlockCoding />} />
-            <Route path="/pythonquest" element={<PythonQuest />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/payments" element={<Payments />} />
-            <Route path="/payment-success" element={<PaymentSuccess />} />
-            <Route path="/robo" element={<Robo />} />
+            <Route path="/game" element={<Game />} />
+            
+            {/* Protected routes */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/codepets" element={
+              <ProtectedRoute>
+                <CodePets />
+              </ProtectedRoute>
+            } />
+            <Route path="/jscodepets" element={
+              <ProtectedRoute>
+                <JsCodePets />
+              </ProtectedRoute>
+            } />
+            <Route path="/blockcoding" element={
+              <ProtectedRoute>
+                <BlockCoding />
+              </ProtectedRoute>
+            } />
+            <Route path="/pythonquest" element={
+              <ProtectedRoute>
+                <PythonQuest />
+              </ProtectedRoute>
+            } />
+            <Route path="/payments" element={
+              <ProtectedRoute>
+                <Payments />
+              </ProtectedRoute>
+            } />
+            <Route path="/payment-success" element={
+              <ProtectedRoute>
+                <PaymentSuccess />
+              </ProtectedRoute>
+            } />
+            <Route path="/robo" element={
+              <ProtectedRoute>
+                <Robo />
+              </ProtectedRoute>
+            } />
+            
+            {/* 404 route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
