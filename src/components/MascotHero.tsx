@@ -6,7 +6,6 @@ import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
 
 export const MascotHero = () => {
   const navigate = useNavigate();
@@ -106,44 +105,39 @@ export const MascotHero = () => {
               <Button
                 size="lg"
                 variant="outline"
-                asChild
+                onClick={() => handleNavigation("/dashboard")}
+                disabled={isLoading}
                 className="border-white hover:bg-white/20 text-lg px-8 py-6 text-violet-600"
               >
-                <Link to="/dashboard">
-                  {isLoading ? "Carregando..." : "Meu Dashboard"}
-                </Link>
+                {isLoading ? "Carregando..." : "Meu Dashboard"}
               </Button>
             ) : (
               <Button
                 size="lg"
                 variant="outline"
-                asChild
+                onClick={() => handleNavigation("/game")}
                 className="border-white hover:bg-white/20 text-lg px-8 py-6 text-white"
+                disabled={isLoading}
               >
-                <Link to="/game">
-                  {isLoading ? "Carregando..." : "Começar Agora"}
-                </Link>
+                {isLoading ? "Carregando..." : "Começar Agora"}
               </Button>
             )}
             <Button
               size="lg"
               variant="outline"
-              asChild
+              onClick={() => navigate("/robo")}
               className="border-white hover:bg-white/20 text-lg px-8 py-6 text-violet-600"
             >
-              <Link to="/robo">
-                Aventura do Robô
-              </Link>
+              Aventura do Robô
             </Button>
             <Button
               size="lg"
               variant="outline"
-              asChild
+              onClick={() => handleNavigation("/blockcoding")}
+              disabled={isLoading}
               className="border-white hover:bg-white/20 text-lg px-8 py-6 text-violet-600"
             >
-              <Link to="/blockcoding">
-                {isLoading ? "Carregando..." : "Explorar Jogos"}
-              </Link>
+              {isLoading ? "Carregando..." : "Explorar Jogos"}
             </Button>
           </div>
         </motion.div>
