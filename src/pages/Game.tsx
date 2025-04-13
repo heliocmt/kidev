@@ -5,13 +5,16 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { PlayIcon, RefreshCw, CheckCircle } from 'lucide-react';
+import { PlayIcon, RefreshCw } from 'lucide-react';
 import { CodeBlock } from '@/components/CodeBlock';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import { Header } from '@/components/Header';
 
 const Game = () => {
   const [progress, setProgress] = useState(0);
   const [code, setCode] = useState('');
+  const navigate = useNavigate();
 
   const challenge = {
     title: 'Primeira Variável',
@@ -37,6 +40,7 @@ const Game = () => {
 
   return (
     <div className="min-h-screen p-8 bg-gradient-to-b from-background to-muted">
+      <Header />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

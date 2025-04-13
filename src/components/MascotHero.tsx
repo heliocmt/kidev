@@ -1,7 +1,7 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,7 +31,7 @@ export const MascotHero = () => {
 
       // Redireciona com base no status da assinatura
       if (data?.subscribed) {
-        navigate("/dashboard");
+        navigate(destination);
       } else {
         // Se não tem assinatura, redireciona para pagamentos
         navigate("/payments");
@@ -105,7 +105,7 @@ export const MascotHero = () => {
               <Button
                 size="lg"
                 variant="outline"
-                onClick={() => handleNavigation("/dashboard")}
+                onClick={() => navigate("/dashboard")}
                 disabled={isLoading}
                 className="border-white hover:bg-white/20 text-lg px-8 py-6 text-violet-600"
               >
@@ -115,7 +115,7 @@ export const MascotHero = () => {
               <Button
                 size="lg"
                 variant="outline"
-                onClick={() => handleNavigation("/game")}
+                onClick={() => navigate("/game")}
                 className="border-white hover:bg-white/20 text-lg px-8 py-6 text-white"
                 disabled={isLoading}
               >
