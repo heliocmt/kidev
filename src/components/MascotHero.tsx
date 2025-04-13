@@ -106,39 +106,44 @@ export const MascotHero = () => {
               <Button
                 size="lg"
                 variant="outline"
-                onClick={() => navigate("/dashboard")}
-                disabled={isLoading}
+                asChild
                 className="border-white hover:bg-white/20 text-lg px-8 py-6 text-violet-600"
               >
-                {isLoading ? "Carregando..." : "Meu Dashboard"}
+                <Link to="/dashboard">
+                  {isLoading ? "Carregando..." : "Meu Dashboard"}
+                </Link>
               </Button>
             ) : (
               <Button
                 size="lg"
                 variant="outline"
-                onClick={() => navigate("/game")}
+                asChild
                 className="border-white hover:bg-white/20 text-lg px-8 py-6 text-white"
-                disabled={isLoading}
               >
-                {isLoading ? "Carregando..." : "Começar Agora"}
+                <Link to="/game">
+                  {isLoading ? "Carregando..." : "Começar Agora"}
+                </Link>
               </Button>
             )}
             <Button
               size="lg"
               variant="outline"
-              onClick={() => navigate("/robo")}
+              asChild
               className="border-white hover:bg-white/20 text-lg px-8 py-6 text-violet-600"
             >
-              Aventura do Robô
+              <Link to="/robo">
+                Aventura do Robô
+              </Link>
             </Button>
             <Button
               size="lg"
               variant="outline"
-              onClick={() => navigate("/blockcoding")}
-              disabled={isLoading}
+              asChild
               className="border-white hover:bg-white/20 text-lg px-8 py-6 text-violet-600"
             >
-              {isLoading ? "Carregando..." : "Explorar Jogos"}
+              <Link to="/blockcoding">
+                {isLoading ? "Carregando..." : "Explorar Jogos"}
+              </Link>
             </Button>
           </div>
         </motion.div>
